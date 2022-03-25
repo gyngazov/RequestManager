@@ -1,0 +1,95 @@
+package window.main.filter;
+
+import backend.window.main.filter.TableModelIEcp;
+import frontend.Label;
+import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class Table extends JTable {
+    private final Label numberOfSelectedRequestIdLabel = new Label("0");
+    private final ArrayList<String> columnNames = new ArrayList<>(
+            Arrays.asList(
+                    "№ заявки",
+                    "Наименование организации",
+                    "ИНН организации",
+                    "Фамилия заявителя",
+                    "СНИЛС заявителя",
+                    "Дата создания заявки",
+                    "Статус заявки",
+                    "Комментарий"));
+    private final TableModelIEcp dataModel = new TableModelIEcp(null, columnNames);
+
+    private Integer[] selectedRequestId;
+
+    public Table() {
+        super();
+        setModel(dataModel);
+        setHeight();
+        setComponentPopupMenu(createPopupMenu());
+        setListener();
+    }
+
+    private void setHeight() {
+        int numberOfVisibleRows = 5;
+        getPreferredScrollableViewportSize().height = getRowHeight() * numberOfVisibleRows;
+    }
+
+    private @NotNull JPopupMenu createPopupMenu() {
+        JPopupMenu popupMenu = new JPopupMenu();
+
+        JMenuItem importApplication = new JMenuItem("Заявление");
+        JMenuItem importProcuration = new JMenuItem("Доверенность");
+        JMenuItem importCertificate = new JMenuItem("Сертификат");
+
+        JMenu download = new JMenu("Скачать");
+        download.add(importApplication);
+        download.add(importProcuration);
+        download.add(importCertificate);
+
+        JMenuItem attachDocument = new JMenuItem("Документы заявителя");
+        JMenuItem attachRequest = new JMenuItem("Запрос");
+
+        JMenu send = new JMenu("Прикрепить");
+        send.add(attachDocument);
+        send.add(attachRequest);
+
+        popupMenu.add(download);
+        popupMenu.add(send);
+
+        return popupMenu;
+    }
+
+    private void setListener() {
+        getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int[] selectedRows = getSelectedRows();
+                int countRows = selectedRows.length;
+                selectedRequestId = new Integer[countRows];
+                for (int i = 0; i < countRows; i++) {
+                    selectedRequestId[i] = (Integer) getModel().getValueAt(selectedRows[i], 0);
+                }
+                System.out.println(Arrays.toString(selectedRequestId));
+                numberOfSelectedRequestIdLabel.setText(String.valueOf(countRows));
+            }
+        });
+    }
+
+    public Label getNumberOfSelectedRequestIdLabel() {
+        return numberOfSelectedRequestIdLabel;
+    }
+
+    public ArrayList<String> getColumnNames() {
+        return columnNames;
+    }
+
+    public TableModelIEcp getDataModel() {
+        return dataModel;
+    }
+
+    public Integer[] getSelectedRequestId() {
+        return selectedRequestId;
+    }
+}

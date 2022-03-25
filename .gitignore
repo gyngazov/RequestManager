@@ -1,0 +1,45 @@
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files
+*.ear
+*.jar
+*.nar
+*.rar
+*.tar.gz
+*.war
+*.zip
+
+# Virtual machine crash logs
+hs_err_pid*
+replay_pid*
+
+# System files
+.DS_Store
+.idea/
+.gradle/
+target/
+*.iml
+Thumbs.db
+
+# Temporary files
+backend_old/
+AttachRequestIEcp.java
+PreservationImportDocumentIEcp.java
+ValidationCheck.java
+Icon.psd
+Icon_pressed.psd
+Database.xlsx
+Layout.xlsx
+JSON.jpg
+Check.txt
+Data.txt
