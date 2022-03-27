@@ -97,7 +97,8 @@ public final class Regions {
         LIST.put(99, "Байконур");
     }
 
-    private Regions() {}
+    private Regions() {
+    }
 
     public static String @NotNull [] getSortedListOfRegions() {
         String[] list = LIST.values().toArray(new String[0]);
@@ -114,8 +115,8 @@ public final class Regions {
 
         List<String> list = new ArrayList<>(Arrays.asList(regionName
                 .strip()
-                .replaceAll("[().]", "")
                 .toUpperCase()
+                .replaceAll("[^А-ЯЁ-]+", " ")
                 .split(" ")));
         List<String> wordFilter = Arrays.asList(
                 "Г", "ГОР", "ГОРОД",

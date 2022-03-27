@@ -33,6 +33,8 @@ Thumbs.db
 
 # Temporary files
 backend_old/
+egrip/
+egrjul/
 AttachRequestIEcp.java
 PreservationImportDocumentIEcp.java
 ValidationCheck.java
