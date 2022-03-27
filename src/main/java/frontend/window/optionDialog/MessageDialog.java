@@ -32,12 +32,6 @@ public class MessageDialog {
     }
 
     private MessageDialog(String message, String title, int messageType) {
-        this(new Object[]{new Label("<html>"
-                        + "<body>"
-                        + "<p align=\"center\">" + message + "</p>"
-                        + "</body>"
-                        + "</html>")},
-                title,
-                messageType);
+        this(new Object[]{new Label(message)}, title, messageType);
     }
 }

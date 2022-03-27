@@ -186,7 +186,7 @@ public final class FormData {
     }
 
     public void setDepartment(String department) {
-        if (nonBlankString(commonName)) {
+        if (nonBlankString(department)) {
             if (verifiable) {
                 department = Validation.getFormattedOrganizationName(department);
                 if (Validation.isCorrectOrganizationName(department)) {

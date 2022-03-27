@@ -74,7 +74,7 @@ public final class ExportDataIEcp extends DataManipulation {
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            final FormData data = getDisplayData();
+            final FormData data = getDisplayData(true);
             if (data == null) throw new Exception("Укажите форму организации бизнеса.");
 
             String URL = getURL();

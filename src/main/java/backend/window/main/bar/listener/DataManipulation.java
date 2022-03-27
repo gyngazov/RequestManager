@@ -16,11 +16,11 @@ abstract class DataManipulation implements ActionListener {
         this.mainForm = mainForm;
     }
 
-    final @Nullable FormData getDisplayData() {
+    final @Nullable FormData getDisplayData(boolean verifiable) {
         EntrepreneurshipEnum entrepreneurshipEnum = (EntrepreneurshipEnum) mainForm.getEntrepreneurshipComboBox().getSelectedItem();
         if (entrepreneurshipEnum == null) return null;
 
-        FormData data = new FormData(entrepreneurshipEnum);
+        FormData data = new FormData(entrepreneurshipEnum, verifiable);
         int regionCode = Regions.getRegionCode((String) mainForm.getStateOrProvinceNameComboBox().getSelectedItem());
 
         switch (entrepreneurshipEnum) {

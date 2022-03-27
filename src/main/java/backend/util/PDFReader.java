@@ -42,8 +42,8 @@ public final class PDFReader {
     private String middleName;                                          // middleName
 
     public PDFReader(File file) throws IOException {
-        text = formatText(readPDF(file));
-        if (checkPDF(text)) {
+        text = formatText(read(file));
+        if (isRightData(text)) {
             switch (entrepreneurshipEnum) {
                 case JURIDICAL_PERSON -> setJPValue();
                 case SOLE_PROPRIETOR -> setSPValue();
@@ -51,7 +51,7 @@ public final class PDFReader {
         }
     }
 
-    private String readPDF(File file) throws IOException {
+    private String read(File file) throws IOException {
         try (PDDocument pdDocument = new PDFParser(new RandomAccessReadBufferedFile(file)).parse()) {
             PDFTextStripper pdfTextStripper = new PDFTextStripper();
             pdfTextStripper.setStartPage(1);
@@ -82,22 +82,27 @@ public final class PDFReader {
         return getValue(text, regex, true);
     }
 
-    private boolean checkPDF(String text) {
-        String isEGRJUL = getValue(text,
+    private boolean isRightData(String text) {
+        String EGRJUL = getValue(text,
                 "из Единого государственного реестра юридических лиц");
-        if (isEGRJUL != null && isEGRJUL.contains("ЮРИДИЧЕСКИХ")) {
+        if (EGRJUL != null && EGRJUL.contains("ЮРИДИЧЕСКИХ")) {
             entrepreneurshipEnum = EntrepreneurshipEnum.JURIDICAL_PERSON;
             return true;
         }
 
-        String isEGRIP = getValue(text,
+        String EGRIP = getValue(text,
                 "из Единого государственного реестра индивидуальных предпринимателей");
-        if (isEGRIP != null && isEGRIP.contains("ИНДИВИДУАЛЬНЫХ")) {
+        if (EGRIP != null && EGRIP.contains("ИНДИВИДУАЛЬНЫХ")) {
             entrepreneurshipEnum = EntrepreneurshipEnum.SOLE_PROPRIETOR;
             return true;
         }
 
         return false;
+    }
+
+    private @NotNull String capitalize(final @NotNull String line) {
+        String subLine = line.substring(1);
+        return line.replace(subLine, subLine.toLowerCase());
     }
 
     private void setJPValue() {
@@ -150,15 +155,18 @@ public final class PDFReader {
             if (fullName != null) {
                 String[] names = fullName.split(" ");
                 if (names.length == 3) {
-                    headLastName = names[0];
-                    headFirstName = names[1];
-                    headMiddleName = names[2];
+                    headLastName = capitalize(names[0]);
+                    headFirstName = capitalize(names[1]);
+                    headMiddleName = capitalize(names[2]);
                 }
 
                 headPersonINN = getValue(personalData,
                         "(?<=ИНН ).*?(?= \\d+ )");
                 headTitle = getValue(personalData,
                         "(?<=Должность ).*?(?= \\d+ )");
+                if (headTitle != null) {
+                    headTitle = capitalize(headTitle);
+                }
             }
         }
     }
@@ -174,9 +182,9 @@ public final class PDFReader {
         if (personalInformation != null) {
             String[] personalInformationSplit = personalInformation.split(" ");
             if (personalInformationSplit.length == 3) {
-                lastName = personalInformationSplit[0];
-                firstName = personalInformationSplit[1];
-                middleName = personalInformationSplit[2];
+                lastName = capitalize(personalInformationSplit[0]);
+                firstName = capitalize(personalInformationSplit[1]);
+                middleName = capitalize(personalInformationSplit[2]);
             }
         }
     }
@@ -192,7 +200,7 @@ public final class PDFReader {
         return LocalDate.parse(Objects.requireNonNullElse(date, "01.01.1970"), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 
-    public boolean checkDate() {
+    public boolean isDateToday() {
         return LocalDate.now().isEqual(getReleaseDate());
     }
 
