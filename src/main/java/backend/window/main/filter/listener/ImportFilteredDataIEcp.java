@@ -9,8 +9,8 @@ import backend.window.main.filter.constant.StatusEnum;
 import backend.window.main.form.FormData;
 import com.google.gson.*;
 import org.jetbrains.annotations.NotNull;
-import window.main.filter.Options;
-import window.optionDialog.MessageDialog;
+import frontend.window.main.filter.Options;
+import frontend.window.optionDialog.MessageDialog;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.awt.event.ActionEvent;

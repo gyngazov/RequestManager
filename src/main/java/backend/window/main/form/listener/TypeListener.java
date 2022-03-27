@@ -1,8 +1,8 @@
 package backend.window.main.form.listener;
 
 import backend.window.main.form.constant.TypeEnum;
-import frontend.ComboBox;
-import window.main.MainForm;
+import frontend.controlElement.ComboBox;
+import frontend.window.main.MainForm;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;

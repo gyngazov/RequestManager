@@ -2,7 +2,7 @@ package backend.window.main.filter.listener;
 
 import backend.window.main.filter.constant.StatusEnum;
 import org.jetbrains.annotations.NotNull;
-import window.main.filter.Options;
+import frontend.window.main.filter.Options;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;

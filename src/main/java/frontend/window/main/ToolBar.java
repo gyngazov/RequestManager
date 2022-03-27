@@ -1,10 +1,10 @@
-package window.main;
+package frontend.window.main;
 
 import backend.util.Validation;
 import backend.window.main.bar.listener.*;
 import backend.window.main.form.constant.DataTypeEnum;
-import frontend.ButtonToolBar;
-import frontend.TextField;
+import frontend.controlElement.ButtonToolBar;
+import frontend.controlElement.TextField;
 
 import javax.swing.*;
 import java.awt.*;

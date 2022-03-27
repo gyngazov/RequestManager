@@ -1,8 +1,8 @@
-package window.optionDialog;
+package frontend.window.optionDialog;
 
 import backend.util.Constants;
-import frontend.Label;
-import frontend.TextField;
+import frontend.controlElement.Label;
+import frontend.controlElement.TextField;
 
 import javax.swing.*;
 

@@ -1,7 +1,7 @@
-package window.main;
+package frontend.window.main;
 
-import window.main.filter.Options;
-import window.main.filter.Table;
+import frontend.window.main.filter.Table;
+import frontend.window.main.filter.Options;
 
 import java.awt.*;
 import javax.swing.*;

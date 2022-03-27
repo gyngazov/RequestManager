@@ -1,6 +1,6 @@
-package window.optionDialog;
+package frontend.window.optionDialog;
 
-import frontend.Label;
+import frontend.controlElement.Label;
 
 import javax.swing.*;
 import java.awt.*;

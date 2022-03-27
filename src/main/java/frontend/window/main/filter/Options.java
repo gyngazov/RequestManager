@@ -1,12 +1,12 @@
-package window.main.filter;
+package frontend.window.main.filter;
 
 import backend.util.Constants;
 import backend.util.Validation;
 import backend.window.main.filter.listener.ImportFilteredDataIEcp;
 import backend.window.main.filter.listener.RequestListener;
-import frontend.ComboBox;
-import frontend.Label;
-import frontend.TextField;
+import frontend.controlElement.ComboBox;
+import frontend.controlElement.Label;
+import frontend.controlElement.TextField;
 import backend.window.main.filter.constant.StatusEnum;
 import org.jetbrains.annotations.NotNull;
 

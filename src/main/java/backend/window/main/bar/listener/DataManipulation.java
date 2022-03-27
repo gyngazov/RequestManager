@@ -5,7 +5,7 @@ import backend.window.main.form.Regions;
 import backend.window.main.form.constant.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import window.main.MainForm;
+import frontend.window.main.MainForm;
 
 import java.awt.event.ActionListener;
 

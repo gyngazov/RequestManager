@@ -1,12 +1,12 @@
-package window.optionDialog;
+package frontend.window.optionDialog;
 
 import backend.util.Constants;
 import backend.util.Validation;
 import backend.window.settings.Options;
-import frontend.CheckBox;
-import frontend.Label;
-import frontend.PasswordField;
-import frontend.TextField;
+import frontend.controlElement.CheckBox;
+import frontend.controlElement.Label;
+import frontend.controlElement.PasswordField;
+import frontend.controlElement.TextField;
 
 import javax.swing.*;
 import java.awt.*;

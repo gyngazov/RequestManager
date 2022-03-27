@@ -1,4 +1,4 @@
-package window.main;
+package frontend.window.main;
 
 import backend.util.Constants;
 import backend.util.Validation;
@@ -7,9 +7,12 @@ import backend.window.main.form.constant.TypeEnum;
 import backend.window.main.form.listener.EntrepreneurshipListener;
 import backend.window.main.form.listener.HeadApplicantListener;
 import backend.window.main.form.listener.TypeListener;
-import frontend.*;
 import backend.window.main.form.constant.GenderEnum;
 import backend.window.main.form.constant.IdentificationKindEnum;
+import frontend.controlElement.CheckBox;
+import frontend.controlElement.ComboBox;
+import frontend.controlElement.Label;
+import frontend.controlElement.TextField;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;

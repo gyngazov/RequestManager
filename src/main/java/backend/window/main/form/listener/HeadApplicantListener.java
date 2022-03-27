@@ -1,7 +1,7 @@
 package backend.window.main.form.listener;
 
-import frontend.TextField;
-import window.main.MainForm;
+import frontend.controlElement.TextField;
+import frontend.window.main.MainForm;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;

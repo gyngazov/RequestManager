@@ -7,11 +7,11 @@ import backend.iEcp.POSTRequest;
 import backend.window.main.form.FormData;
 import backend.window.settings.Options;
 import com.google.gson.GsonBuilder;
-import frontend.Label;
-import frontend.TextField;
-import window.main.MainForm;
-import window.optionDialog.InputPanel;
-import window.optionDialog.MessageDialog;
+import frontend.controlElement.Label;
+import frontend.controlElement.TextField;
+import frontend.window.main.MainForm;
+import frontend.window.optionDialog.InputPanel;
+import frontend.window.optionDialog.MessageDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

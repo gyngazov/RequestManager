@@ -1,7 +1,7 @@
-package window.main.filter;
+package frontend.window.main.filter;
 
 import backend.window.main.filter.TableModelIEcp;
-import frontend.Label;
+import frontend.controlElement.Label;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

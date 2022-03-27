@@ -2,8 +2,8 @@ package backend.window.main.form.listener;
 
 import backend.util.Validation;
 import backend.window.main.form.constant.EntrepreneurshipEnum;
-import frontend.ComboBox;
-import window.main.MainForm;
+import frontend.controlElement.ComboBox;
+import frontend.window.main.MainForm;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;

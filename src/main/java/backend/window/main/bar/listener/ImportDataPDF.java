@@ -3,8 +3,8 @@ package backend.window.main.bar.listener;
 import backend.util.PDFReader;
 import backend.window.main.form.FormData;
 import backend.window.settings.Options;
-import window.main.MainForm;
-import window.optionDialog.MessageDialog;
+import frontend.window.main.MainForm;
+import frontend.window.optionDialog.MessageDialog;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;

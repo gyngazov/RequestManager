@@ -3,7 +3,7 @@ package backend.window.main.bar.listener;
 import backend.window.main.form.FormData;
 import backend.window.main.form.constant.DataTypeEnum;
 import backend.window.main.form.constant.EntrepreneurshipEnum;
-import window.main.MainForm;
+import frontend.window.main.MainForm;
 
 import java.awt.event.ActionEvent;
 import java.util.Objects;
