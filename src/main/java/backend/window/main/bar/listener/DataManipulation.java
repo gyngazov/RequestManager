@@ -80,6 +80,8 @@ abstract class DataManipulation implements ActionListener {
         data.setNumber(mainForm.getNumberTextField().getText());
         data.setIssueId(mainForm.getIssueIdTextField().getText());
 
+        data.setProduct(entrepreneurshipEnum);
+
         return data;
     }
 

@@ -12,6 +12,7 @@ import frontend.controlElement.TextField;
 import frontend.window.main.MainForm;
 import frontend.window.optionDialog.InputPanel;
 import frontend.window.optionDialog.MessageDialog;
+import org.jetbrains.annotations.Nullable;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.swing.*;
@@ -23,7 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 
 public final class ExportDataIEcp extends DataManipulation {
-    private final MainForm mainForm;
     private final TextField requestIDTextField;
 
     private Map<String, String> badRequestIDMap;
@@ -34,7 +34,6 @@ public final class ExportDataIEcp extends DataManipulation {
                           TextField requestIDTextField) {
         super(mainForm);
 
-        this.mainForm = mainForm;
         this.requestIDTextField = requestIDTextField;
     }
 
@@ -66,17 +65,17 @@ public final class ExportDataIEcp extends DataManipulation {
 
     private int showOptionDialog(JPanel userInput) {
         String[] options = {"Создать", "Отмена"};
-        return JOptionPane.showOptionDialog(mainForm,
+        return JOptionPane.showOptionDialog(null,
                 new JComponent[]{new Label("Создать новую заявку?"), userInput},
                 "Создание заявки",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
                 options, options[1]);
     }
 
-    private void sendRequestToServer(String URL, String JSON, String requestID) throws IOException {
+    private void sendRequestToServer(String URL, String JSON, @Nullable String requestID) throws IOException {
         POSTRequest postRequest = new POSTRequest(URL, JSON);
         if (postRequest.getResponseCode() != HttpsURLConnection.HTTP_OK) {
-
+            badRequestIDMap.put(requestID, postRequest.getResponse());
         }
     }
 
@@ -104,68 +103,60 @@ public final class ExportDataIEcp extends DataManipulation {
                             if (Objects.equals(dataValidation.getOrgINN(), data.getOrgINN())) {
                                 sendRequestToServer(URL, JSON, ID);
                             } else {
-                                badRequestIDMap.put(ID, "Некорректный номер заявки");
+                                badRequestIDMap.put(ID, "Заявка принадлежит другому юридическому лицу.");
                             }
                         } else {
-                            POSTRequest postRequest = new POSTRequest(URL, JSON);
-                            if (postRequest.getResponseCode() != HttpsURLConnection.HTTP_OK) {
-                                // TODO
-                            }
+                            sendRequestToServer(URL, JSON, ID);
                         }
                     } catch (NumberFormatException exception) {
-                        badRequestIDMap.put(ID, "Некорректный номер заявки");
+                        badRequestIDMap.put(ID, "Некорректный номер заявки.");
                     } catch (BadRequestException exception) {
-                        // TODO 2
+                        badRequestIDMap.put(ID, exception.getMessage());
                     } catch (SocketTimeoutException exception) {
-                        badRequestIDMap.put(ID, "Ошибка получения данных");
+                        badRequestIDMap.put(ID, "Время ожидания операции истекло.");
                     } catch (IOException exception) {
-                        // TODO 4
+                        badRequestIDMap.put(ID, "Ошибка получения данных.");
                     } catch (Exception exception) {
-                        // TODO 5
+                        badRequestIDMap.put(ID, exception.getMessage());
                     }
                 }
             } else {
                 InputPanel userInput = new InputPanel("Укажите количество создаваемых заявок");
                 JSON = generateJSONCreate(data);
-                if (showOptionDialog(userInput) == 0) {
-                    requestIDCount = Integer.parseInt(userInput.getIn().getText());
-                    for (int i = 1; i <= requestIDCount; i++) {
+                while (true) {
+                    if (showOptionDialog(userInput) == 0) {
                         try {
-                            POSTRequest postRequest = new POSTRequest(URL, JSON);
-                            if (postRequest.getResponseCode() != HttpsURLConnection.HTTP_OK) {
-                                // TODO
+                            int badRequestIDCount = 0;
+                            requestIDCount = Integer.parseInt(userInput.getIn().getText());
+                            for (int i = 0; i < requestIDCount; i++) {
+                                try {
+                                    sendRequestToServer(URL, JSON, null);
+                                } catch (Exception exception) {
+                                    badRequestIDCount += 1;
+                                }
                             }
-                        } catch (BadRequestException exception) {
-                            new MessageDialog.Error(exception.getMessage());
-                        } catch (SocketTimeoutException exception) {
-                            new MessageDialog.Error("Время ожидания операции истекло, попробуйте повторить запрос позже.");
-                        } catch (IOException exception) {
-                            new MessageDialog.Error("Ошибка получения данных, попробуйте повторить запрос позже.");
-                        } catch (Exception exception) {
-                            new MessageDialog.Error(exception.getMessage());
+
+                            if (badRequestIDCount == 0) {
+                                new MessageDialog.Info("Запрос успешно обработан!");
+                            } else if (requestIDCount == badRequestIDCount) {
+                                new MessageDialog.Error("Ошибка при выполнении операции, повторите попытку.");
+                            } else {
+                                new MessageDialog.Warning("Успешно создано заявок: "
+                                        + (requestIDCount - badRequestIDCount)
+                                        + " из "
+                                        + requestIDCount
+                                        + ".");
+                            }
+
+                            break;
+                        } catch (NumberFormatException exception) {
+                            new MessageDialog.Error("Ошибка ввода данных, повторите ввод.");
                         }
+                    } else {
+                        return;
                     }
-                } else return;
+                }
             }
-
-            if (badRequestIDMap.size() == 0) {
-                new MessageDialog.Info("Успешно!");
-            } else {
-                new MessageDialog.Warning("Успешно создано " + (requestIDCount - badRequestIDMap.size()) + " из " + requestIDCount + ".");
-            }
-
-//            try {
-//            } catch (NumberFormatException exception) {
-//                new MessageDialog.Error("Проверьте правильность написания номера заявки.");
-//            } catch (BadRequestException exception) {
-//                new MessageDialog.Error(exception.getMessage());
-//            } catch (SocketTimeoutException exception) {
-//                new MessageDialog.Error("Время ожидания операции истекло, попробуйте повторить запрос позже.");
-//            } catch (IOException exception) {
-//                new MessageDialog.Error("Ошибка получения данных, попробуйте повторить запрос позже.");
-//            } catch (Exception exception) {
-//                new MessageDialog.Error(exception.getMessage());
-//            }
         }
     }
 }
