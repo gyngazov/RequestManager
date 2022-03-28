@@ -10,7 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public final class ToolBar extends JToolBar {
-    private final TextField requestId = new TextField(Validation::isCorrectRequestId);
+    private final TextField requestIDTextField = new TextField(Validation::isCorrectRequestId);
 
     private final MainForm mainForm;
 
@@ -64,7 +64,7 @@ public final class ToolBar extends JToolBar {
         addSeparator();
         add(importDataIEcp);
         add(exportDataIEcp);
-        add(requestId);
+        add(requestIDTextField);
         addSeparator();
         add(new JSeparator(JSeparator.VERTICAL));
         addSeparator();
@@ -93,12 +93,12 @@ public final class ToolBar extends JToolBar {
 
     private void setListener() {
         importDataPDF.addActionListener(new ImportDataPDF(mainForm));
-        importDataIEcp.addActionListener(new ImportDataIEcp(mainForm, requestId, DataTypeEnum.ALL_DATA));
-        exportDataIEcp.addActionListener(new ExportDataIEcp(mainForm, requestId));
+        importDataIEcp.addActionListener(new ImportDataIEcp(mainForm, requestIDTextField, DataTypeEnum.ALL_DATA));
+        exportDataIEcp.addActionListener(new ExportDataIEcp(mainForm, requestIDTextField));
         deleteData.addActionListener(new DataReset(mainForm, DataTypeEnum.ALL_DATA));
     }
 
-    public TextField getRequestId() {
-        return requestId;
+    public TextField getRequestIDTextField() {
+        return requestIDTextField;
     }
 }

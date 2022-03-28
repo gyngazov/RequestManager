@@ -1,16 +1,11 @@
 package backend.iEcp.JSON;
 
-import com.google.gson.annotations.Expose;
-
 public final class JSONView extends JSONMain {
-    private final int requestId;
+    private final int requestID;
 
-    public JSONView(int requestId) {
+    public JSONView(int requestID) {
         super();
-        this.requestId = requestId;
-    }
 
-    public JSONView(String requestId) throws NumberFormatException {
-        this(Integer.parseInt(requestId));
+        this.requestID = requestID;
     }
 }

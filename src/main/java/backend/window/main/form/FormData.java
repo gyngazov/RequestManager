@@ -853,8 +853,8 @@ public final class FormData {
         return data;
     }
 
-    public static @NotNull FormData generateOnRequestId(@NotNull String requestId) throws NumberFormatException, IOException {
-        POSTRequest request = new POSTRequest(POSTRequest.VIEW_REQUEST, new Gson().toJson(new JSONView(requestId)));
+    public static @NotNull FormData generateOnRequestId(int requestID) throws IOException {
+        POSTRequest request = new POSTRequest(POSTRequest.VIEW_REQUEST, new Gson().toJson(new JSONView(requestID)));
         if (request.getResponseCode() == HttpsURLConnection.HTTP_OK) {
             JsonObject externalObject = JsonParser.parseString(request.getResponse()).getAsJsonObject();
             Integer reqId = externalObject.get("requestId").getAsInt();
@@ -872,6 +872,8 @@ public final class FormData {
                     : TypeEnum.RF_PASSPORT);
             data.setCitizenship(data.getTypeEnum() == TypeEnum.RF_PASSPORT ? TypeEnum.CITIZENSHIP_RF : null);
             return data;
-        } else throw new BadRequestException(request.getResponse());
+        } else {
+            throw new BadRequestException(request.getResponse());
+        }
     }
 }

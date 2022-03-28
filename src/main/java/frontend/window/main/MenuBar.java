@@ -105,9 +105,9 @@ final class MenuBar extends JMenuBar {
 
         importDataPDF.addActionListener(new ImportDataPDF(mainForm));
 
-        importOrganizationDataIEcp.addActionListener(new ImportDataIEcp(mainForm, toolBar.getRequestId(), DataTypeEnum.ORGANIZATION_DATA));
-        importApplicantDataIEcp.addActionListener(new ImportDataIEcp(mainForm, toolBar.getRequestId(), DataTypeEnum.APPLICANT_DATA));
-        importDataIEcp.addActionListener(new ImportDataIEcp(mainForm, toolBar.getRequestId(), DataTypeEnum.ALL_DATA));
+        importOrganizationDataIEcp.addActionListener(new ImportDataIEcp(mainForm, toolBar.getRequestIDTextField(), DataTypeEnum.ORGANIZATION_DATA));
+        importApplicantDataIEcp.addActionListener(new ImportDataIEcp(mainForm, toolBar.getRequestIDTextField(), DataTypeEnum.APPLICANT_DATA));
+        importDataIEcp.addActionListener(new ImportDataIEcp(mainForm, toolBar.getRequestIDTextField(), DataTypeEnum.ALL_DATA));
 
         deleteOrganizationData.addActionListener(new DataReset(mainForm, DataTypeEnum.ORGANIZATION_DATA));
         deleteApplicantData.addActionListener(new DataReset(mainForm, DataTypeEnum.APPLICANT_DATA));

@@ -12,21 +12,22 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 public final class ImportDataIEcp extends DataManipulation {
-    private final TextField requestId;
+    private final TextField requestIDTextField;
     private final DataTypeEnum dataTypeEnum;
 
     public ImportDataIEcp(MainForm mainForm,
-                          TextField requestId,
+                          TextField requestIDTextField,
                           DataTypeEnum dataTypeEnum) {
         super(mainForm);
-        this.requestId = requestId;
+
+        this.requestIDTextField = requestIDTextField;
         this.dataTypeEnum = dataTypeEnum;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            FormData data = FormData.generateOnRequestId(requestId.getText());
+            FormData data = FormData.generateOnRequestId(Integer.parseInt(requestIDTextField.getText()));
             switch (dataTypeEnum) {
                 case ORGANIZATION_DATA -> displayOrganizationData(data);
                 case APPLICANT_DATA -> displayApplicantData(data);

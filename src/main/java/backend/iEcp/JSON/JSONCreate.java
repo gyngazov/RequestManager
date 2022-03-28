@@ -7,6 +7,7 @@ public final class JSONCreate extends JSONMain {
 
     public JSONCreate(FormData info) {
         super();
+
         this.info = info;
     }
 }

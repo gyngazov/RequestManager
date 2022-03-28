@@ -71,9 +71,9 @@ public record ImportFilteredDataIEcp(@NotNull Options options) implements Action
         ArrayList<ArrayList<Object>> tabularData = new ArrayList<>();
         try {
             if (selectedRequestId()) {
-                String[] requestsId = options.getRequestIdTextField().getText().split("[ ,;]+");
-                for (String requestId : requestsId) {
-                    FormData data = FormData.generateOnRequestId(requestId);
+                String[] requestIDs = options.getRequestIdTextField().getText().split("[ ,;]+");
+                for (String ID : requestIDs) {
+                    FormData data = FormData.generateOnRequestId(Integer.parseInt(ID));
                     tabularData.add(generateTableRow(data));
                 }
                 setData(tabularData);

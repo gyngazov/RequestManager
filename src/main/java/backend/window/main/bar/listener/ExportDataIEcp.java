@@ -13,6 +13,7 @@ import frontend.window.main.MainForm;
 import frontend.window.optionDialog.InputPanel;
 import frontend.window.optionDialog.MessageDialog;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
@@ -23,31 +24,32 @@ import java.util.Objects;
 
 public final class ExportDataIEcp extends DataManipulation {
     private final MainForm mainForm;
-    private final TextField requestID;
+    private final TextField requestIDTextField;
 
-    private final Map<Integer, String> badRequestIDMap = new HashMap<>();
+    private Map<String, String> badRequestIDMap;
     private int requestIDCount;
 
 
-    public ExportDataIEcp(MainForm mainForm, TextField requestID) {
+    public ExportDataIEcp(MainForm mainForm,
+                          TextField requestIDTextField) {
         super(mainForm);
 
         this.mainForm = mainForm;
-        this.requestID = requestID;
+        this.requestIDTextField = requestIDTextField;
     }
 
     private boolean selectedRequestID() {
-        return !requestID.getText().isBlank();
+        return !requestIDTextField.getText().isBlank();
     }
 
-    private String generateJSONCreate(FormData data) throws NumberFormatException {
+    private String generateJSONCreate(FormData data) {
         return new GsonBuilder()
                 .serializeNulls()
                 .create()
                 .toJson(new JSONCreate(data), JSONCreate.class);
     }
 
-    private String generateJSONChange(FormData data, String requestID) throws NumberFormatException {
+    private String generateJSONChange(FormData data, int requestID) {
         return new GsonBuilder()
                 .serializeNulls()
                 .create()
@@ -71,30 +73,55 @@ public final class ExportDataIEcp extends DataManipulation {
                 options, options[1]);
     }
 
+    private void sendRequestToServer(String URL, String JSON, String requestID) throws IOException {
+        POSTRequest postRequest = new POSTRequest(URL, JSON);
+        if (postRequest.getResponseCode() != HttpsURLConnection.HTTP_OK) {
+
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        try {
-            final FormData data = getDisplayData(true);
-            if (data == null) throw new Exception("Укажите форму организации бизнеса.");
+        FormData data = getDisplayData(true);
+        if (data == null) {
+            new MessageDialog.Error("В карточке организации укажите её форму.");
+        } else {
+            badRequestIDMap = new HashMap<>();
+            requestIDCount = 0;
 
             String URL = getURL();
             String JSON;
 
             if (selectedRequestID()) {
-                String[] requestIDs = requestID.getText().split("[ ,;]+");
+                String[] requestIDs = requestIDTextField.getText().split("[ ,;]+");
                 requestIDCount = requestIDs.length;
-                for (String requestID : requestIDs) {
-                    JSON = generateJSONChange(data, requestID);
-                    FormData dataValidation = FormData.generateOnRequestId(requestID);
-                    if (Options.read().isVerifiedOrgInn()) {
-                        if (Objects.equals(dataValidation.getOrgINN(), data.getOrgINN())) {
-                            // TODO: send to server
+                for (String ID : requestIDs) {
+                    try {
+                        int requestID = Integer.parseInt(ID);
+                        JSON = generateJSONChange(data, requestID);
+                        if (Options.read().isVerifiedOrgInn()) {
+                            FormData dataValidation = FormData.generateOnRequestId(requestID);
+                            if (Objects.equals(dataValidation.getOrgINN(), data.getOrgINN())) {
+                                sendRequestToServer(URL, JSON, ID);
+                            } else {
+                                badRequestIDMap.put(ID, "Некорректный номер заявки");
+                            }
                         } else {
-                            // TODO: mark an error "Указанная заявка принадлежит другому лицу."
-                            break;
+                            POSTRequest postRequest = new POSTRequest(URL, JSON);
+                            if (postRequest.getResponseCode() != HttpsURLConnection.HTTP_OK) {
+                                // TODO
+                            }
                         }
-                    } else {
-                        // TODO: send to server
+                    } catch (NumberFormatException exception) {
+                        badRequestIDMap.put(ID, "Некорректный номер заявки");
+                    } catch (BadRequestException exception) {
+                        // TODO 2
+                    } catch (SocketTimeoutException exception) {
+                        badRequestIDMap.put(ID, "Ошибка получения данных");
+                    } catch (IOException exception) {
+                        // TODO 4
+                    } catch (Exception exception) {
+                        // TODO 5
                     }
                 }
             } else {
@@ -103,7 +130,20 @@ public final class ExportDataIEcp extends DataManipulation {
                 if (showOptionDialog(userInput) == 0) {
                     requestIDCount = Integer.parseInt(userInput.getIn().getText());
                     for (int i = 1; i <= requestIDCount; i++) {
-                        // TODO: send to server
+                        try {
+                            POSTRequest postRequest = new POSTRequest(URL, JSON);
+                            if (postRequest.getResponseCode() != HttpsURLConnection.HTTP_OK) {
+                                // TODO
+                            }
+                        } catch (BadRequestException exception) {
+                            new MessageDialog.Error(exception.getMessage());
+                        } catch (SocketTimeoutException exception) {
+                            new MessageDialog.Error("Время ожидания операции истекло, попробуйте повторить запрос позже.");
+                        } catch (IOException exception) {
+                            new MessageDialog.Error("Ошибка получения данных, попробуйте повторить запрос позже.");
+                        } catch (Exception exception) {
+                            new MessageDialog.Error(exception.getMessage());
+                        }
                     }
                 } else return;
             }
@@ -114,16 +154,18 @@ public final class ExportDataIEcp extends DataManipulation {
                 new MessageDialog.Warning("Успешно создано " + (requestIDCount - badRequestIDMap.size()) + " из " + requestIDCount + ".");
             }
 
-        } catch (NumberFormatException exception) {
-            new MessageDialog.Error("Проверьте правильность написания номера заявки.");
-        } catch (BadRequestException exception) {
-            new MessageDialog.Error(exception.getMessage());
-        } catch (SocketTimeoutException exception) {
-            new MessageDialog.Error("Время ожидания операции истекло, попробуйте повторить запрос позже.");
-        } catch (IOException exception) {
-            new MessageDialog.Error("Ошибка получения данных, попробуйте повторить запрос позже.");
-        } catch (Exception exception) {
-            new MessageDialog.Error(exception.getMessage());
+//            try {
+//            } catch (NumberFormatException exception) {
+//                new MessageDialog.Error("Проверьте правильность написания номера заявки.");
+//            } catch (BadRequestException exception) {
+//                new MessageDialog.Error(exception.getMessage());
+//            } catch (SocketTimeoutException exception) {
+//                new MessageDialog.Error("Время ожидания операции истекло, попробуйте повторить запрос позже.");
+//            } catch (IOException exception) {
+//                new MessageDialog.Error("Ошибка получения данных, попробуйте повторить запрос позже.");
+//            } catch (Exception exception) {
+//                new MessageDialog.Error(exception.getMessage());
+//            }
         }
     }
 }

@@ -8,11 +8,8 @@ public final class JSONChange extends JSONMain {
 
     public JSONChange(int requestId, FormData info) {
         super();
+
         this.requestId = requestId;
         this.info = info;
-    }
-
-    public JSONChange(String requestId, FormData info) throws NumberFormatException {
-        this(Integer.parseInt(requestId), info);
     }
 }
