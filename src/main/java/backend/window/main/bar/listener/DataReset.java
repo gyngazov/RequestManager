@@ -14,13 +14,17 @@ public final class DataReset extends DataManipulation {
 
     public DataReset(MainForm mainForm, DataTypeEnum dataTypeEnum) {
         super(mainForm);
+
         this.mainForm = mainForm;
         this.dataTypeEnum = dataTypeEnum;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        FormData data = FormData.generateByDefault((EntrepreneurshipEnum) Objects.requireNonNullElse(mainForm.getEntrepreneurshipComboBox().getSelectedItem(), EntrepreneurshipEnum.JURIDICAL_PERSON));
+        mainForm.getHeadApplicantCheckBox().setSelected(false);
+
+        FormData data = FormData.generateByDefault((EntrepreneurshipEnum) Objects.requireNonNullElse(mainForm.getEntrepreneurshipComboBox().getSelectedItem(),
+                EntrepreneurshipEnum.JURIDICAL_PERSON));
         switch (dataTypeEnum) {
             case ORGANIZATION_DATA -> displayOrganizationData(data);
             case APPLICANT_DATA -> displayApplicantData(data);

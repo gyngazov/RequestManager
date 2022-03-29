@@ -15,29 +15,29 @@ final class MenuBar extends JMenuBar {
     private final MainForm mainForm;
     private final ToolBar toolBar;
 
-    private final JMenuItem settings = new JMenuItem("Настройки");
+    private final JMenuItem settings = new JMenuItem("Настройки...");
     private final JMenuItem exit = new JMenuItem("Выход");
 
-    private final JMenuItem importDataPDF = new JMenuItem("Выгрузить сведения из ЕГРЮЛ/ЕГРИП");
+    private final JMenuItem importDataPDF = new JMenuItem("Выгрузить сведения из ЕГРЮЛ/ЕГРИП...");
 
-    private final JMenuItem importOrganizationDataIEcp = new JMenuItem("Заполнить карточку организации по № заявки");
-    private final JMenuItem importApplicantDataIEcp = new JMenuItem("Заполнить ПДн заявителя по № заявки");
+    private final JMenuItem importOrganizationDataIEcp = new JMenuItem("Заполнить карточку организации по № заявки...");
+    private final JMenuItem importApplicantDataIEcp = new JMenuItem("Заполнить ПДн заявителя по № заявки...");
     private final JMenuItem importDataIEcp = new JMenuItem("Выгрузить все сведения по № заявки");
 
-    private final JMenuItem importOrganizationDataCfg = new JMenuItem("Заполнить карточку организации из CFG");
-    private final JMenuItem importApplicantDataCfg = new JMenuItem("Заполнить ПДн заявителя из CFG");
-    private final JMenuItem importDataCfg = new JMenuItem("Выгрузить все сведения из CFG");
+    private final JMenuItem importOrganizationDataCfg = new JMenuItem("Заполнить карточку организации из CFG...");
+    private final JMenuItem importApplicantDataCfg = new JMenuItem("Заполнить ПДн заявителя из CFG...");
+    private final JMenuItem importDataCfg = new JMenuItem("Выгрузить все сведения из CFG...");
 
     private final JMenuItem deleteOrganizationData = new JMenuItem("Очистить карточку организации");
     private final JMenuItem deleteApplicantData = new JMenuItem("Очистить ПДн заявителя");
     private final JMenuItem deleteData = new JMenuItem("Очистить всё");
 
-    private final JMenuItem attachDocument = new JMenuItem("Документы заявителя");
-    private final JMenuItem attachRequest = new JMenuItem("Запрос");
+    private final JMenuItem attachDocument = new JMenuItem("Документы заявителя...");
+    private final JMenuItem attachRequest = new JMenuItem("Запрос...");
 
-    private final JMenuItem importDocument = new JMenuItem("Документы");
+    private final JMenuItem importDocument = new JMenuItem("Документы...");
 
-    private final JMenuItem about = new JMenuItem("О программе");
+    private final JMenuItem about = new JMenuItem("О программе...");
 
     public MenuBar(Table table,
                    MainForm mainForm,

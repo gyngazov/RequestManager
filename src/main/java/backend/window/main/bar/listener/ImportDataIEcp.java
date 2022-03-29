@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 public final class ImportDataIEcp extends DataManipulation {
+    private final MainForm mainForm;
     private final TextField requestIDTextField;
     private final DataTypeEnum dataTypeEnum;
 
@@ -20,12 +21,15 @@ public final class ImportDataIEcp extends DataManipulation {
                           DataTypeEnum dataTypeEnum) {
         super(mainForm);
 
+        this.mainForm = mainForm;
         this.requestIDTextField = requestIDTextField;
         this.dataTypeEnum = dataTypeEnum;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        mainForm.getHeadApplicantCheckBox().setSelected(false);
+
         try {
             FormData data = FormData.generateOnRequestId(Integer.parseInt(requestIDTextField.getText()));
             switch (dataTypeEnum) {
