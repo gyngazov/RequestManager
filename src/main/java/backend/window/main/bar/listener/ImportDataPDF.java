@@ -68,14 +68,7 @@ public final class ImportDataPDF extends DataManipulation {
                         if (reader.isDateToday()) {
                             new MessageDialog.Info("Запрос успешно обработан!");
                         } else {
-                            new MessageDialog.Warning("" +
-                                    "<html>" +
-                                    "<body>" +
-                                    "Запрос успешно обработан!" +
-                                    "<br>" +
-                                    "Для работы с данными используйте актуальные сведения из ЕГРЮЛ/ЕГРИП!" +
-                                    "</body>" +
-                                    "</html>");
+                            new MessageDialog.Warning("<html><body>Запрос успешно обработан!<br>Для работы с данными используйте актуальные сведения из ЕГРЮЛ/ЕГРИП!</body></html>");
                         }
                     }
                 }
