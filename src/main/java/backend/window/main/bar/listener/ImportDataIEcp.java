@@ -38,11 +38,9 @@ public final class ImportDataIEcp extends DataManipulation {
                 options, options[1]);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        mainForm.getHeadApplicantCheckBox().setSelected(false);
-
+    private @Nullable String getRequestID(ActionEvent e) {
         String requestID;
+
         if (requestIDTextField == null) {
             String title = "Введите № заявки";
             Object object = e.getSource();
@@ -54,11 +52,21 @@ public final class ImportDataIEcp extends DataManipulation {
             if (showOptionDialog(inputPanel) == 0) {
                 requestID = inputPanel.getUserInput().getText();
             } else {
-                return;
+                return null;
             }
         } else {
             requestID = requestIDTextField.getText();
         }
+
+        return requestID;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String requestID = getRequestID(e);
+        if (requestID == null) return;
+
+        mainForm.getHeadApplicantCheckBox().setSelected(false);
 
         try {
             FormData data = FormData.generateOnRequestId(Integer.parseInt(requestID));
@@ -69,7 +77,7 @@ public final class ImportDataIEcp extends DataManipulation {
             }
             new MessageDialog.Info("Запрос успешно обработан!");
         } catch (NumberFormatException exception) {
-            new MessageDialog.Error("Проверьте правильность написания номера заявки.");
+            new MessageDialog.Error("Некорректный ввод номера заявки.");
         } catch (BadRequestException exception) {
             new MessageDialog.Error(exception.getMessage());
         } catch (SocketTimeoutException exception) {

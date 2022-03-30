@@ -14,7 +14,7 @@ public final class MainWindow extends JFrame {
 
     public MainWindow() {
         localizeFileChooser();
-        setJMenuBar(new MenuBar(table, mainForm, toolBar));
+        setJMenuBar(new MenuBar(table, mainForm));
         setLayout();
         buildFrame();
     }

@@ -13,7 +13,6 @@ import javax.swing.*;
 final class MenuBar extends JMenuBar {
     private final Table table;
     private final MainForm mainForm;
-    private final ToolBar toolBar;
 
     private final JMenuItem settings = new JMenuItem("Настройки...");
     private final JMenuItem exit = new JMenuItem("Выход");
@@ -22,7 +21,7 @@ final class MenuBar extends JMenuBar {
 
     private final JMenuItem importOrganizationDataIEcp = new JMenuItem("Заполнить карточку организации по № заявки...");
     private final JMenuItem importApplicantDataIEcp = new JMenuItem("Заполнить ПДн заявителя по № заявки...");
-    private final JMenuItem importDataIEcp = new JMenuItem("Выгрузить все сведения по № заявки");
+    private final JMenuItem importDataIEcp = new JMenuItem("Выгрузить все сведения по № заявки...");
 
     private final JMenuItem importOrganizationDataCfg = new JMenuItem("Заполнить карточку организации из CFG...");
     private final JMenuItem importApplicantDataCfg = new JMenuItem("Заполнить ПДн заявителя из CFG...");
@@ -39,12 +38,9 @@ final class MenuBar extends JMenuBar {
 
     private final JMenuItem about = new JMenuItem("О программе...");
 
-    public MenuBar(Table table,
-                   MainForm mainForm,
-                   ToolBar toolBar) {
+    public MenuBar(Table table, MainForm mainForm) {
         this.table = table;
         this.mainForm = mainForm;
-        this.toolBar = toolBar;
 
         addMenuBar();
         setListener();
@@ -107,7 +103,7 @@ final class MenuBar extends JMenuBar {
 
         importOrganizationDataIEcp.addActionListener(new ImportDataIEcp(mainForm, null, DataTypeEnum.ORGANIZATION_DATA));
         importApplicantDataIEcp.addActionListener(new ImportDataIEcp(mainForm, null, DataTypeEnum.APPLICANT_DATA));
-        importDataIEcp.addActionListener(new ImportDataIEcp(mainForm, toolBar.getRequestIDTextField(), DataTypeEnum.ALL_DATA));
+        importDataIEcp.addActionListener(new ImportDataIEcp(mainForm, null, DataTypeEnum.ALL_DATA));
 
         deleteOrganizationData.addActionListener(new DataReset(mainForm, DataTypeEnum.ORGANIZATION_DATA));
         deleteApplicantData.addActionListener(new DataReset(mainForm, DataTypeEnum.APPLICANT_DATA));
