@@ -1,6 +1,5 @@
 package frontend.window.main;
 
-import backend.util.Validation;
 import backend.window.main.bar.listener.*;
 import backend.window.main.form.constant.DataTypeEnum;
 import frontend.controlElement.ButtonToolBar;
@@ -10,7 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public final class ToolBar extends JToolBar {
-    private final TextField requestIDTextField = new TextField(Validation::isCorrectRequestId);
+    private final TextField requestIDTextField = new TextField();
 
     private final MainForm mainForm;
 

@@ -5,20 +5,25 @@ import backend.window.main.form.FormData;
 import backend.window.main.form.constant.DataTypeEnum;
 import frontend.controlElement.TextField;
 import frontend.window.main.MainForm;
+import frontend.window.optionDialog.InputPanel;
 import frontend.window.optionDialog.MessageDialog;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.Objects;
 
 public final class ImportDataIEcp extends DataManipulation {
     private final MainForm mainForm;
     private final TextField requestIDTextField;
     private final DataTypeEnum dataTypeEnum;
 
-    public ImportDataIEcp(MainForm mainForm,
-                          TextField requestIDTextField,
-                          DataTypeEnum dataTypeEnum) {
+    public ImportDataIEcp(@NotNull MainForm mainForm,
+                          @Nullable TextField requestIDTextField,
+                          @NotNull DataTypeEnum dataTypeEnum) {
         super(mainForm);
 
         this.mainForm = mainForm;
@@ -26,12 +31,37 @@ public final class ImportDataIEcp extends DataManipulation {
         this.dataTypeEnum = dataTypeEnum;
     }
 
+    private int showOptionDialog(JPanel userInput) {
+        String[] options = {"Заполнить", "Отмена"};
+        return JOptionPane.showOptionDialog(null, userInput, "Ввод данных",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+                options, options[1]);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         mainForm.getHeadApplicantCheckBox().setSelected(false);
 
+        String requestID;
+        if (requestIDTextField == null) {
+            String title = "Введите № заявки";
+            Object object = e.getSource();
+            if (object instanceof AbstractButton button) {
+                title = Objects.requireNonNullElse(button.getText().replace("...", ""), title);
+            }
+
+            InputPanel inputPanel = new InputPanel(title);
+            if (showOptionDialog(inputPanel) == 0) {
+                requestID = inputPanel.getUserInput().getText();
+            } else {
+                return;
+            }
+        } else {
+            requestID = requestIDTextField.getText();
+        }
+
         try {
-            FormData data = FormData.generateOnRequestId(Integer.parseInt(requestIDTextField.getText()));
+            FormData data = FormData.generateOnRequestId(Integer.parseInt(requestID));
             switch (dataTypeEnum) {
                 case ORGANIZATION_DATA -> displayOrganizationData(data);
                 case APPLICANT_DATA -> displayApplicantData(data);

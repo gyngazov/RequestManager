@@ -8,7 +8,7 @@ import javax.swing.*;
 
 public final class InputPanel extends JPanel {
     private final Label title;
-    private final TextField in = new TextField();
+    private final TextField userInput = new TextField();
 
     public InputPanel(String title) {
         this.title = new Label(title);
@@ -24,14 +24,14 @@ public final class InputPanel extends JPanel {
 
         layout.setHorizontalGroup(layout.createSequentialGroup()
                 .addComponent(title)
-                .addComponent(in, Constants.TEXT_FIELD_WIDTH / 4, Constants.TEXT_FIELD_WIDTH / 4, Constants.TEXT_FIELD_WIDTH / 4));
+                .addComponent(userInput, Constants.TEXT_FIELD_WIDTH / 3, Constants.TEXT_FIELD_WIDTH / 3, Constants.TEXT_FIELD_WIDTH / 3));
 
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                 .addComponent(title, Constants.LABEL_HEIGHT, Constants.LABEL_HEIGHT, Constants.LABEL_HEIGHT)
-                .addComponent(in, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT));
+                .addComponent(userInput, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT));
     }
 
-    public TextField getIn() {
-        return in;
+    public TextField getUserInput() {
+        return userInput;
     }
 }

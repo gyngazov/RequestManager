@@ -149,7 +149,7 @@ public final class ExportDataIEcp extends DataManipulation {
         while (true) {
             if (showOptionDialog(userInput) == 0) {
                 try {
-                    int requestIDCount = Integer.parseInt(userInput.getIn().getText());
+                    int requestIDCount = Integer.parseInt(userInput.getUserInput().getText());
                     int badRequestIDCount = 0;
 
                     for (int i = 0; i < requestIDCount; i++) {
