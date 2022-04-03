@@ -1,12 +1,16 @@
 package backend.window.main.form.constant;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public enum EntrepreneurshipEnum implements Suppliable<Integer> {
+    @Expose
     @SerializedName(value = "3")
     JURIDICAL_PERSON("Юридическое лицо", 3),
+    @Expose
     @SerializedName(value = "2")
     SOLE_PROPRIETOR("Индивидуальный пред.", 2),
+    @Expose
     @SerializedName(value = "1")
     NATURAL_PERSON("Физическое лицо", 1);
 

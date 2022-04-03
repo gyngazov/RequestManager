@@ -9,7 +9,9 @@ import frontend.window.main.MainForm;
 
 import java.awt.event.ActionListener;
 
-abstract class DataManipulation implements ActionListener {
+public abstract class DataManipulation implements ActionListener {
+    public static final int MIN_REQUEST_ID = 28631;
+
     private final MainForm mainForm;
 
     DataManipulation(MainForm mainForm) {
@@ -25,42 +27,39 @@ abstract class DataManipulation implements ActionListener {
 
         switch (entrepreneurshipEnum) {
             case JURIDICAL_PERSON -> {
+                data.setCommonName(mainForm.getCommonNameTextField().getText());
+                data.setDepartment(mainForm.getDepartmentTextField().getText());
+                data.setKPP(mainForm.getKPPTextField().getText());
                 data.setOrgINN(mainForm.getOrgINNTextField().getText());
                 data.setOGRN(mainForm.getOGRNTextField().getText());
+                data.setOrgPhone(mainForm.getOrgPhoneTextField().getText());
+                data.setIndex(mainForm.getIndexTextField().getText());
                 data.setStateOrProvinceNameLaw(regionCode);
                 data.setLocalityNameLaw(mainForm.getLocalityNameTextField().getText());
                 data.setStreetAddressLaw(mainForm.getStreetAddressTextField().getText());
+                data.setHeadLastName(mainForm.getHeadLastNameTextField().getText());
+                data.setHeadFirstName(mainForm.getHeadFirstNameTextField().getText());
+                data.setHeadMiddleName(mainForm.getHeadMiddleNameTextField().getText());
+                data.setHeadPersonINN(mainForm.getHeadPersonINNTextField().getText());
+                data.setHeadTitle(mainForm.getHeadTitleTextField().getText());
 
-                data.setPersonINN(mainForm.getPersonINNTextField().getText());
+                data.setTitle(mainForm.getTitleTextField().getText());
             }
             case SOLE_PROPRIETOR -> {
                 data.setOGRNIP(mainForm.getOGRNTextField().getText());
+                data.setOrgPhone(mainForm.getOrgPhoneTextField().getText());
                 data.setStateOrProvinceName(regionCode);
                 data.setLocalityName(mainForm.getLocalityNameTextField().getText());
                 data.setStreetAddress(mainForm.getStreetAddressTextField().getText());
-
-                data.setOrgINN(mainForm.getPersonINNTextField().getText());
             }
             case NATURAL_PERSON -> {
                 data.setStateOrProvinceName(regionCode);
                 data.setLocalityName(mainForm.getLocalityNameTextField().getText());
                 data.setStreetAddress(mainForm.getStreetAddressTextField().getText());
-
-                data.setOrgINN(mainForm.getPersonINNTextField().getText());
             }
         }
 
-        data.setCommonName(mainForm.getCommonNameTextField().getText());
-        data.setDepartment(mainForm.getDepartmentTextField().getText());
-        data.setKPP(mainForm.getKPPTextField().getText());
-        data.setOrgPhone(mainForm.getOrgPhoneTextField().getText());
-        data.setIndex(mainForm.getIndexTextField().getText());
         data.setCountryName(mainForm.getCountryNameTextField().getText());
-        data.setHeadLastName(mainForm.getHeadLastNameTextField().getText());
-        data.setHeadFirstName(mainForm.getHeadFirstNameTextField().getText());
-        data.setHeadMiddleName(mainForm.getHeadMiddleNameTextField().getText());
-        data.setHeadPersonINN(mainForm.getHeadPersonINNTextField().getText());
-        data.setHeadTitle(mainForm.getHeadTitleTextField().getText());
 
         data.setIdentificationKindEnum((IdentificationKindEnum) mainForm.getIdentificationKindComboBox().getSelectedItem());
         data.setLastName(mainForm.getLastNameTextField().getText());
@@ -68,10 +67,10 @@ abstract class DataManipulation implements ActionListener {
         data.setMiddleName(mainForm.getMiddleNameTextField().getText());
         data.setGenderEnum((GenderEnum) mainForm.getGenderComboBox().getSelectedItem());
         data.setSNILS(mainForm.getSNILSTextField().getText());
+        data.setPersonINN(mainForm.getPersonINNTextField().getText());
         data.setBirthDate(mainForm.getBirthDateTextField().getText());
         data.setEmailAddress(mainForm.getEmailAddressTextField().getText());
         data.setPersonPhone(mainForm.getPersonPhoneTextField().getText());
-        data.setTitle(mainForm.getTitleTextField().getText());
         data.setTypeEnum((TypeEnum) mainForm.getTypeComboBox().getSelectedItem());
         data.setCitizenship(mainForm.getCitizenshipTextField().getText());
         data.setIssueDate(mainForm.getIssueDateTextField().getText());
@@ -86,9 +85,8 @@ abstract class DataManipulation implements ActionListener {
     }
 
     final void displayApplicantData(@NotNull FormData data) {
-        switch (data.getEntrepreneurshipEnum()) {
-            case JURIDICAL_PERSON -> mainForm.getPersonINNTextField().setText(data.getPersonINN());
-            case SOLE_PROPRIETOR, NATURAL_PERSON -> mainForm.getPersonINNTextField().setText(data.getOrgINN());
+        if (data.getEntrepreneurshipEnum() == EntrepreneurshipEnum.JURIDICAL_PERSON) {
+            mainForm.getTitleTextField().setText(data.getTitle());
         }
 
         mainForm.getIdentificationKindComboBox().setSelectedItem(data.getIdentificationKindEnum());
@@ -97,10 +95,10 @@ abstract class DataManipulation implements ActionListener {
         mainForm.getMiddleNameTextField().setText(data.getMiddleName());
         mainForm.getGenderComboBox().setSelectedItem(data.getGenderEnum());
         mainForm.getSNILSTextField().setText(data.getSNILS());
+        mainForm.getPersonINNTextField().setText(data.getPersonINN());
         mainForm.getBirthDateTextField().setText(data.getBirthDate());
         mainForm.getEmailAddressTextField().setText(data.getEmailAddress());
         mainForm.getPersonPhoneTextField().setText(data.getPersonPhone());
-        mainForm.getTitleTextField().setText(data.getTitle());
         mainForm.getCitizenshipTextField().setText(data.getCitizenship());
         mainForm.getIssueDateTextField().setText(data.getIssueDate());
         mainForm.getSeriesTextField().setText(data.getSeries());
@@ -108,41 +106,38 @@ abstract class DataManipulation implements ActionListener {
         mainForm.getIssueIdTextField().setText(data.getIssueId());
 
         mainForm.getTypeComboBox().setSelectedItem(data.getTypeEnum());
-        mainForm.getEntrepreneurshipComboBox().setSelectedItem(data.getEntrepreneurshipEnum());
     }
 
     final void displayOrganizationData(@NotNull FormData data) {
         switch (data.getEntrepreneurshipEnum()) {
             case JURIDICAL_PERSON -> {
+                mainForm.getCommonNameTextField().setText(data.getCommonName());
+                mainForm.getDepartmentTextField().setText(data.getDepartment());
+                mainForm.getKPPTextField().setText(data.getKPP());
                 mainForm.getOrgINNTextField().setText(data.getOrgINN());
                 mainForm.getOGRNTextField().setText(data.getOGRN());
+                mainForm.getOrgPhoneTextField().setText(data.getOrgPhone());
+                mainForm.getIndexTextField().setText(data.getIndex());
                 mainForm.getStateOrProvinceNameComboBox().setSelectedItem(Regions.getRegionName(data.getStateOrProvinceNameLaw()));
                 mainForm.getLocalityNameTextField().setText(data.getLocalityNameLaw());
                 mainForm.getStreetAddressTextField().setText(data.getStreetAddressLaw());
+                mainForm.getHeadLastNameTextField().setText(data.getHeadLastName());
+                mainForm.getHeadFirstNameTextField().setText(data.getHeadFirstName());
+                mainForm.getHeadMiddleNameTextField().setText(data.getHeadMiddleName());
+                mainForm.getHeadPersonINNTextField().setText(data.getHeadPersonINN());
+                mainForm.getHeadTitleTextField().setText(data.getHeadTitle());
             }
             case SOLE_PROPRIETOR -> {
                 mainForm.getOGRNTextField().setText(data.getOGRNIP());
+                mainForm.getOrgPhoneTextField().setText(data.getOrgPhone());
                 mainForm.getStateOrProvinceNameComboBox().setSelectedItem(Regions.getRegionName(data.getStateOrProvinceName()));
                 mainForm.getLocalityNameTextField().setText(data.getLocalityName());
-                mainForm.getStreetAddressTextField().setText(data.getStreetAddress());
             }
             case NATURAL_PERSON -> {
                 mainForm.getStateOrProvinceNameComboBox().setSelectedItem(Regions.getRegionName(data.getStateOrProvinceName()));
                 mainForm.getLocalityNameTextField().setText(data.getLocalityName());
-                mainForm.getStreetAddressTextField().setText(data.getStreetAddress());
             }
         }
-
-        mainForm.getCommonNameTextField().setText(data.getCommonName());
-        mainForm.getDepartmentTextField().setText(data.getDepartment());
-        mainForm.getKPPTextField().setText(data.getKPP());
-        mainForm.getOrgPhoneTextField().setText(data.getOrgPhone());
-        mainForm.getIndexTextField().setText(data.getIndex());
-        mainForm.getHeadLastNameTextField().setText(data.getHeadLastName());
-        mainForm.getHeadFirstNameTextField().setText(data.getHeadFirstName());
-        mainForm.getHeadMiddleNameTextField().setText(data.getHeadMiddleName());
-        mainForm.getHeadPersonINNTextField().setText(data.getHeadPersonINN());
-        mainForm.getHeadTitleTextField().setText(data.getHeadTitle());
 
         mainForm.getEntrepreneurshipComboBox().setSelectedItem(data.getEntrepreneurshipEnum());
     }

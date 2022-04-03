@@ -23,101 +23,138 @@ public final class FormData {
     @Expose(serialize = false, deserialize = false)
     private final boolean verifiable;
 
+    @Expose
     @SerializedName(value = "type")
     private final EntrepreneurshipEnum entrepreneurshipEnum;            // type
+    @Expose
     @SerializedName(value = "products")
     private int[] product;                                              // products
+    @Expose
     @SerializedName(value = "offerJoining")
     private final boolean offerJoining = true;                          // offerJoining
 
     @Expose(serialize = false)
     @SerializedName(value = "requestId")
-    private Integer requestId;                                          // requestId
+    private Integer requestID;                                          // requestID
     @Expose(serialize = false)
     @SerializedName(value = "createDate")
-    private final String createDate = null;                             // createDate
+    private String createDate;                                          // createDate
     @Expose(serialize = false)
     @SerializedName(value = "statusId")
     private StatusEnum statusEnum;                                      // statusId
     @Expose(serialize = false)
     @SerializedName(value = "comment")
-    private final String comment = null;                                // comment
+    private String comment;                                             // comment
 
+    @Expose
     @SerializedName(value = "company")
     private String commonName;                                          // company
+    @Expose()
     @SerializedName(value = "department")
     private String department;                                          // department
+    @Expose()
     @SerializedName(value = "kpp")
     private String KPP;                                                 // kpp
+    @Expose()
     @SerializedName(value = "inn")
     private String orgINN;                                              // inn
+    @Expose()
     @SerializedName(value = "ogrn")
     private String OGRN;                                                // ogrn
+    @Expose()
     @SerializedName(value = "ogrnip")
     private String OGRNIP;                                              // ogrnip
+    @Expose()
     @SerializedName(value = "companyPhone")
     private String orgPhone;                                            // companyPhone
+    @Expose()
     @SerializedName(value = "index")
     private String index;                                               // index
     @Expose(serialize = false, deserialize = false)
     private String countryName;
+    @Expose()
     @SerializedName(value = "regionLaw")
     private int stateOrProvinceNameLaw;                                 // regionLaw
+    @Expose()
     @SerializedName(value = "cityLaw")
     private String localityNameLaw;                                     // cityLaw
+    @Expose()
     @SerializedName(value = "addressLaw")
     private String streetAddressLaw;                                    // addressLaw
+    @Expose()
     @SerializedName(value = "region")
     private int stateOrProvinceName;                                    // region
+    @Expose()
     @SerializedName(value = "city")
     private String localityName;                                        // city
+    @Expose()
     @SerializedName(value = "address")
     private String streetAddress;                                       // address
+    @Expose()
     @SerializedName(value = "headLastName")
     private String headLastName;                                        // headLastName
+    @Expose()
     @SerializedName(value = "headFirstName")
     private String headFirstName;                                       // headFirstName
+    @Expose()
     @SerializedName(value = "headMiddleName")
     private String headMiddleName;                                      // headMiddleName
     @Expose(serialize = false, deserialize = false)
     private String headPersonINN;
+    @Expose()
     @SerializedName(value = "headPosition")
     private String headTitle;                                           // headPosition
 
+    @Expose()
     @SerializedName(value = "identificationKind")
     private IdentificationKindEnum identificationKindEnum;              // identificationKind
+    @Expose()
     @SerializedName(value = "lastName")
     private String lastName;                                            // lastName
+    @Expose()
     @SerializedName(value = "firstName")
     private String firstName;                                           // firstName
+    @Expose()
     @SerializedName(value = "middleName")
-    private String middleName;                                          // middleName
+    private String middleName = "";                                     // middleName
+    @Expose()
     @SerializedName(value = "gender")
     private GenderEnum genderEnum;                                      // gender
+    @Expose()
     @SerializedName(value = "snils")
     private String SNILS;                                               // snils
+    @Expose()
     @SerializedName(value = "personInn")
     private String personINN;                                           // personInn
+    @Expose()
     @SerializedName(value = "birthDate")
     private String birthDate;                                           // birthDate
+    @Expose()
     @SerializedName(value = "email")
     private String emailAddress;                                        // email
+    @Expose()
     @SerializedName(value = "phone")
     private String personPhone;                                         // phone
+    @Expose()
     @SerializedName(value = "position")
     private String title;                                               // position
     @Expose(serialize = false, deserialize = false)
     private TypeEnum typeEnum;
     @Expose(serialize = false, deserialize = false)
     private String citizenship;
+    @Expose()
     @SerializedName(value = "passportDate")
     private String issueDate;                                           // passportDate
+    @Expose()
     @SerializedName(value = "passportDivision")
     private String division = "";                                       // passportDivision
+    @Expose()
     @SerializedName(value = "passportSerial")
     private String series;                                              // passportSerial
+    @Expose()
     @SerializedName(value = "passportNumber")
     private String number;                                              // passportNumber
+    @Expose()
     @SerializedName(value = "passportCode")
     private String issueId;                                             // passportCode
 
@@ -126,13 +163,13 @@ public final class FormData {
         this.entrepreneurshipEnum = entrepreneurshipEnum;
 
         switch (entrepreneurshipEnum) {
-            case JURIDICAL_PERSON -> department = "";
+            case JURIDICAL_PERSON -> {
+                department = "";
+                index = "";
+                headMiddleName = "";
+            }
             case SOLE_PROPRIETOR, NATURAL_PERSON -> streetAddress = "";
         }
-    }
-
-    public FormData(@NotNull EntrepreneurshipEnum entrepreneurshipEnum) {
-        this(entrepreneurshipEnum, true);
     }
 
     private boolean nonBlankString(String text) {
@@ -160,8 +197,8 @@ public final class FormData {
         }
     }
 
-    private void setRequestId(@Nullable Integer requestId) {
-        this.requestId = requestId;
+    private void setRequestID(@Nullable Integer requestID) {
+        this.requestID = requestID;
     }
 
     private void setStatusEnum(@Nullable StatusEnum statusEnum) {
@@ -621,8 +658,8 @@ public final class FormData {
         return offerJoining;
     }
 
-    public Integer getRequestId() {
-        return requestId;
+    public Integer getRequestID() {
+        return requestID;
     }
 
     public String getCreateDate() {
@@ -790,16 +827,107 @@ public final class FormData {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FormData data = (FormData) o;
+        return entrepreneurshipEnum == data.entrepreneurshipEnum
+                && Arrays.equals(product, data.product)
+                && offerJoining == data.offerJoining
+
+                && Objects.equals(commonName, data.commonName)
+                && Objects.equals(department, data.department)
+                && Objects.equals(KPP, data.KPP)
+                && Objects.equals(orgINN, data.orgINN)
+                && Objects.equals(OGRN, data.OGRN)
+                && Objects.equals(OGRNIP, data.OGRNIP)
+                && Objects.equals(orgPhone, data.orgPhone)
+                && Objects.equals(index, data.index)
+                && Objects.equals(countryName, data.countryName)
+                && stateOrProvinceNameLaw == data.stateOrProvinceNameLaw
+                && Objects.equals(localityNameLaw, data.localityNameLaw)
+                && Objects.equals(streetAddressLaw, data.streetAddressLaw)
+                && stateOrProvinceName == data.stateOrProvinceName
+                && Objects.equals(localityName, data.localityName)
+                && Objects.equals(streetAddress, data.streetAddress)
+                && Objects.equals(headLastName, data.headLastName)
+                && Objects.equals(headFirstName, data.headFirstName)
+                && Objects.equals(headMiddleName, data.headMiddleName)
+                && Objects.equals(headPersonINN, data.headPersonINN)
+                && Objects.equals(headTitle, data.headTitle)
+
+                && identificationKindEnum == data.identificationKindEnum
+                && Objects.equals(lastName, data.lastName)
+                && Objects.equals(firstName, data.firstName)
+                && Objects.equals(middleName, data.middleName)
+                && genderEnum == data.genderEnum
+                && Objects.equals(SNILS, data.SNILS)
+                && Objects.equals(personINN, data.personINN)
+                && Objects.equals(birthDate, data.birthDate)
+                && Objects.equals(emailAddress, data.emailAddress)
+                && Objects.equals(personPhone, data.personPhone)
+                && Objects.equals(title, data.title)
+                && typeEnum == data.typeEnum
+                && Objects.equals(citizenship, data.citizenship)
+                && Objects.equals(issueDate, data.issueDate)
+                && Objects.equals(division, data.division)
+                && Objects.equals(series, data.series)
+                && Objects.equals(number, data.number)
+                && Objects.equals(issueId, data.issueId);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(entrepreneurshipEnum,
+                offerJoining,
+                commonName,
+                department,
+                KPP,
+                orgINN,
+                OGRN,
+                OGRNIP,
+                orgPhone,
+                index,
+                countryName,
+                stateOrProvinceNameLaw,
+                localityNameLaw,
+                streetAddressLaw,
+                stateOrProvinceName,
+                localityName,
+                streetAddress,
+                headLastName,
+                headFirstName,
+                headMiddleName,
+                headPersonINN,
+                headTitle,
+                identificationKindEnum,
+                lastName,
+                firstName,
+                middleName,
+                genderEnum,
+                SNILS,
+                personINN,
+                birthDate,
+                emailAddress,
+                personPhone,
+                title,
+                typeEnum,
+                citizenship,
+                issueDate,
+                division,
+                series,
+                number,
+                issueId);
+        result = 31 * result + Arrays.hashCode(product);
+        return result;
+    }
+
+    @Override
     public String toString() {
-        return "FormData{" +
-                "verifiable=" + verifiable +
+        return "FormData{" + "verifiable=" + verifiable +
                 ", entrepreneurshipEnum=" + entrepreneurshipEnum +
                 ", product=" + Arrays.toString(product) +
                 ", offerJoining=" + offerJoining +
-                ", requestId=" + requestId +
-                ", createDate='" + createDate + '\'' +
-                ", statusEnum=" + statusEnum +
-                ", comment='" + comment + '\'' +
                 ", commonName='" + commonName + '\'' +
                 ", department='" + department + '\'' +
                 ", KPP='" + KPP + '\'' +
@@ -853,27 +981,75 @@ public final class FormData {
         return data;
     }
 
-    public static @NotNull FormData generateOnRequestId(int requestID) throws IOException {
+    public static @NotNull FormData generateOnRequestID(int requestID) throws IOException {
         POSTRequest request = new POSTRequest(POSTRequest.VIEW_REQUEST, new Gson().toJson(new JSONView(requestID)));
         if (request.getResponseCode() == HttpsURLConnection.HTTP_OK) {
             JsonObject externalObject = JsonParser.parseString(request.getResponse()).getAsJsonObject();
-            Integer reqId = externalObject.get("requestId").getAsInt();
-            Integer statusId = externalObject.get("statusId").getAsInt();
+            Integer ID = externalObject.get("requestId").getAsInt();
+            Integer statusID = externalObject.get("statusId").getAsInt();
 
             JsonObject internalObject = externalObject.getAsJsonObject("info");
 
             FormData data = new Gson().fromJson(internalObject, FormData.class);
-            data.setRequestId(reqId);
-            data.setStatusEnum(statusId);
+            data.setRequestID(ID);
+            data.setStatusEnum(statusID);
             data.setTypeEnum(Objects.equals(Validation.getFormattedSeries(data.getSeries()), TypeEnum.FID_DOC_SERIES)
                     && Objects.equals(Validation.getFormattedNumber(data.getNumber()), TypeEnum.FID_DOC_NUMBER)
-                    && Objects.equals(Validation.getFormattedIssueId(data.getIssueId()), TypeEnum.FID_DOC_ISSUE_ID)
-                    ? TypeEnum.FID_DOC
+                    && Objects.equals(Validation.getFormattedIssueId(data.getIssueId()), TypeEnum.FID_DOC_ISSUE_ID) ?
+                    TypeEnum.FID_DOC
                     : TypeEnum.RF_PASSPORT);
             data.setCitizenship(data.getTypeEnum() == TypeEnum.RF_PASSPORT ? TypeEnum.CITIZENSHIP_RF : null);
             return data;
         } else {
             throw new BadRequestException(request.getResponse());
         }
+    }
+
+    public static @NotNull FormData copy(@NotNull FormData data) {
+        FormData copied = new FormData(data.getEntrepreneurshipEnum(), false);
+
+        copied.setProduct(data.getProduct());
+
+        copied.setCommonName(data.getCommonName());
+        copied.setDepartment(data.getDepartment());
+        copied.setKPP(data.getKPP());
+        copied.setOrgINN(data.getOrgINN());
+        copied.setOGRN(data.getOGRN());
+        copied.setOGRNIP(data.getOGRNIP());
+        copied.setOrgPhone(data.getOrgPhone());
+        copied.setIndex(data.getIndex());
+        copied.setCountryName(data.getCountryName());
+        copied.setStateOrProvinceNameLaw(data.getStateOrProvinceNameLaw());
+        copied.setLocalityNameLaw(data.getLocalityNameLaw());
+        copied.setStreetAddressLaw(data.getStreetAddressLaw());
+        copied.setStateOrProvinceName(data.getStateOrProvinceName());
+        copied.setLocalityName(data.getLocalityName());
+        copied.setStreetAddress(data.getStreetAddress());
+        copied.setHeadLastName(data.getHeadLastName());
+        copied.setHeadFirstName(data.getHeadFirstName());
+        copied.setHeadMiddleName(data.getHeadMiddleName());
+        copied.setHeadPersonINN(data.getHeadPersonINN());
+        copied.setHeadTitle(data.getHeadTitle());
+
+        copied.setIdentificationKindEnum(data.getIdentificationKindEnum());
+        copied.setLastName(data.getLastName());
+        copied.setFirstName(data.getFirstName());
+        copied.setMiddleName(data.getMiddleName());
+        copied.setGenderEnum(data.getGenderEnum());
+        copied.setSNILS(data.getSNILS());
+        copied.setPersonINN(data.getPersonINN());
+        copied.setBirthDate(data.getBirthDate());
+        copied.setEmailAddress(data.getEmailAddress());
+        copied.setPersonPhone(data.getPersonPhone());
+        copied.setTitle(data.getTitle());
+        copied.setTypeEnum(data.getTypeEnum());
+        copied.setCitizenship(data.getCitizenship());
+        copied.setIssueDate(data.getIssueDate());
+        copied.setDivision(data.getDivision());
+        copied.setSeries(data.getSeries());
+        copied.setNumber(data.getNumber());
+        copied.setIssueId(data.getIssueId());
+
+        return copied;
     }
 }

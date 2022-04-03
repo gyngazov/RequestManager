@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Table extends JTable {
-    private final Label numberOfSelectedRequestIdLabel = new Label("0");
+    private final Label numberOfSelectedRequestIDLabel = new Label("0");
     private final ArrayList<String> columnNames = new ArrayList<>(
             Arrays.asList(
                     "№ заявки",
@@ -22,7 +22,7 @@ public class Table extends JTable {
                     "Комментарий"));
     private final TableModelIEcp dataModel = new TableModelIEcp(null, columnNames);
 
-    private Integer[] selectedRequestId;
+    private Integer[] selectedRequestID;
 
     public Table() {
         super();
@@ -67,18 +67,18 @@ public class Table extends JTable {
             if (!e.getValueIsAdjusting()) {
                 int[] selectedRows = getSelectedRows();
                 int countRows = selectedRows.length;
-                selectedRequestId = new Integer[countRows];
+                selectedRequestID = new Integer[countRows];
                 for (int i = 0; i < countRows; i++) {
-                    selectedRequestId[i] = (Integer) getModel().getValueAt(selectedRows[i], 0);
+                    selectedRequestID[i] = (Integer) getModel().getValueAt(selectedRows[i], 0);
                 }
-                System.out.println(Arrays.toString(selectedRequestId));
-                numberOfSelectedRequestIdLabel.setText(String.valueOf(countRows));
+                System.out.println(Arrays.toString(selectedRequestID));
+                numberOfSelectedRequestIDLabel.setText(String.valueOf(countRows));
             }
         });
     }
 
-    public Label getNumberOfSelectedRequestIdLabel() {
-        return numberOfSelectedRequestIdLabel;
+    public Label getNumberOfSelectedRequestIDLabel() {
+        return numberOfSelectedRequestIDLabel;
     }
 
     public ArrayList<String> getColumnNames() {
@@ -89,7 +89,7 @@ public class Table extends JTable {
         return dataModel;
     }
 
-    public Integer[] getSelectedRequestId() {
-        return selectedRequestId;
+    public Integer[] getSelectedRequestID() {
+        return selectedRequestID;
     }
 }

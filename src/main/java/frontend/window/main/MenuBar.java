@@ -1,8 +1,6 @@
 package frontend.window.main;
 
-import backend.window.main.bar.listener.DataReset;
-import backend.window.main.bar.listener.ImportDataIEcp;
-import backend.window.main.bar.listener.ImportDataPDF;
+import backend.window.main.bar.listener.*;
 import backend.window.main.form.constant.DataTypeEnum;
 import frontend.window.main.filter.Table;
 import frontend.window.optionDialog.Setting;
@@ -17,24 +15,25 @@ final class MenuBar extends JMenuBar {
     private final JMenuItem settings = new JMenuItem("Настройки...");
     private final JMenuItem exit = new JMenuItem("Выход");
 
-    private final JMenuItem importDataPDF = new JMenuItem("Выгрузить сведения из ЕГРЮЛ/ЕГРИП...");
+    private final JMenuItem importingDataPDF = new JMenuItem("Выгрузить сведения из ЕГРЮЛ/ЕГРИП...");
 
-    private final JMenuItem importOrganizationDataIEcp = new JMenuItem("Заполнить карточку организации по № заявки...");
-    private final JMenuItem importApplicantDataIEcp = new JMenuItem("Заполнить ПДн заявителя по № заявки...");
-    private final JMenuItem importDataIEcp = new JMenuItem("Выгрузить все сведения по № заявки...");
+    private final JMenuItem importingOrganizationDataIEcp = new JMenuItem("Заполнить карточку организации по № заявки...");
+    private final JMenuItem importingApplicantDataIEcp = new JMenuItem("Заполнить ПДн заявителя по № заявки...");
+    private final JMenuItem importingDataIEcp = new JMenuItem("Выгрузить все сведения по № заявки...");
 
-    private final JMenuItem importOrganizationDataCfg = new JMenuItem("Заполнить карточку организации из CFG...");
-    private final JMenuItem importApplicantDataCfg = new JMenuItem("Заполнить ПДн заявителя из CFG...");
-    private final JMenuItem importDataCfg = new JMenuItem("Выгрузить все сведения из CFG...");
+    private final JMenuItem importingOrganizationDataCfg = new JMenuItem("Заполнить карточку организации из CFG...");
+    private final JMenuItem importingApplicantDataCfg = new JMenuItem("Заполнить ПДн заявителя из CFG...");
+    private final JMenuItem importingDataCfg = new JMenuItem("Выгрузить все сведения из CFG...");
 
-    private final JMenuItem deleteOrganizationData = new JMenuItem("Очистить карточку организации");
-    private final JMenuItem deleteApplicantData = new JMenuItem("Очистить ПДн заявителя");
-    private final JMenuItem deleteData = new JMenuItem("Очистить всё");
+    private final JMenuItem deletingOrganizationData = new JMenuItem("Очистить карточку организации");
+    private final JMenuItem deletingApplicantData = new JMenuItem("Очистить ПДн заявителя");
+    private final JMenuItem deletingData = new JMenuItem("Очистить всё");
 
-    private final JMenuItem attachDocument = new JMenuItem("Документы заявителя...");
-    private final JMenuItem attachRequest = new JMenuItem("Запрос...");
+    private final JMenuItem packingFiles = new JMenuItem("Запаковать документы...");
+    private final JMenuItem attachedFile = new JMenuItem("Прикрепить документы...");
+    private final JMenuItem attachedRequest = new JMenuItem("Прикрепить запрос...");
 
-    private final JMenuItem importDocument = new JMenuItem("Документы...");
+    private final JMenuItem importingDocument = new JMenuItem("Скачать документы...");
 
     private final JMenuItem about = new JMenuItem("О программе...");
 
@@ -56,36 +55,35 @@ final class MenuBar extends JMenuBar {
         JMenu delete = new JMenu("Очистить");
 
         JMenu attach = new JMenu("Прикрепить");
-        JMenu download = new JMenu("Скачать");
 
         file.add(settings);
         file.addSeparator();
         file.add(exit);
 
-        insert.add(importDataPDF);
+        insert.add(importingDataPDF);
         insert.addSeparator();
-        insert.add(importOrganizationDataIEcp);
-        insert.add(importApplicantDataIEcp);
-        insert.add(importDataIEcp);
+        insert.add(importingOrganizationDataIEcp);
+        insert.add(importingApplicantDataIEcp);
+        insert.add(importingDataIEcp);
         insert.addSeparator();
-        insert.add(importOrganizationDataCfg);
-        insert.add(importApplicantDataCfg);
-        insert.add(importDataCfg);
+        insert.add(importingOrganizationDataCfg);
+        insert.add(importingApplicantDataCfg);
+        insert.add(importingDataCfg);
 
-        delete.add(deleteOrganizationData);
-        delete.add(deleteApplicantData);
-        delete.add(deleteData);
+        delete.add(deletingOrganizationData);
+        delete.add(deletingApplicantData);
+        delete.add(deletingData);
 
         edit.add(insert);
         edit.add(delete);
 
-        attach.add(attachDocument);
-        attach.add(attachRequest);
+        attach.add(attachedFile);
+        attach.add(attachedRequest);
 
-        download.add(importDocument);
-
+        iEcp.add(packingFiles);
+        iEcp.addSeparator();
         iEcp.add(attach);
-        iEcp.add(download);
+        iEcp.add(importingDocument);
 
         help.add(about);
 
@@ -99,15 +97,18 @@ final class MenuBar extends JMenuBar {
         settings.addActionListener(e -> new Setting());
         exit.addActionListener(e -> System.exit(0));
 
-        importDataPDF.addActionListener(new ImportDataPDF(mainForm));
+        importingDataPDF.addActionListener(new ImportDataPDF(mainForm));
 
-        importOrganizationDataIEcp.addActionListener(new ImportDataIEcp(mainForm, null, DataTypeEnum.ORGANIZATION_DATA));
-        importApplicantDataIEcp.addActionListener(new ImportDataIEcp(mainForm, null, DataTypeEnum.APPLICANT_DATA));
-        importDataIEcp.addActionListener(new ImportDataIEcp(mainForm, null, DataTypeEnum.ALL_DATA));
+        importingOrganizationDataIEcp.addActionListener(new ImportDataIEcp(mainForm, null, DataTypeEnum.ORGANIZATION_DATA));
+        importingApplicantDataIEcp.addActionListener(new ImportDataIEcp(mainForm, null, DataTypeEnum.APPLICANT_DATA));
+        importingDataIEcp.addActionListener(new ImportDataIEcp(mainForm, null, DataTypeEnum.ALL_DATA));
 
-        deleteOrganizationData.addActionListener(new DataReset(mainForm, DataTypeEnum.ORGANIZATION_DATA));
-        deleteApplicantData.addActionListener(new DataReset(mainForm, DataTypeEnum.APPLICANT_DATA));
-        deleteData.addActionListener(new DataReset(mainForm, DataTypeEnum.ALL_DATA));
+        deletingOrganizationData.addActionListener(new DataReset(mainForm, DataTypeEnum.ORGANIZATION_DATA));
+        deletingApplicantData.addActionListener(new DataReset(mainForm, DataTypeEnum.APPLICANT_DATA));
+        deletingData.addActionListener(new DataReset(mainForm, DataTypeEnum.ALL_DATA));
+
+        packingFiles.addActionListener(new PackingFiles());
+        attachedFile.addActionListener(new ExportAttachedFileIEcp(table));
 
         about.addActionListener(e -> new About());
     }

@@ -16,20 +16,20 @@ import java.awt.*;
 public final class Options extends JPanel {
     private final Table table;
 
-    private final TextField requestIdTextField = new TextField();
+    private final TextField requestIDTextField = new TextField();
     private final TextField creationDateTextField = new TextField();
     private final ComboBox<StatusEnum> statusComboBox = new ComboBox.Status();
     private final TextField commonNameTextField = new TextField();
     private final TextField orgINNTextField = new TextField(Validation::isCorrectOrgINN);
     private final TextField lastNameTextField = new TextField();
     private final TextField SNILSTextField = new TextField(Validation::isCorrectSNILS);
-    private final Label numberOfSelectedRequestIdLabel;
-    private final Label numberOfFoundRequestIdLabel = new Label("0");
+    private final Label numberOfSelectedRequestIDLabel;
+    private final Label numberOfFoundRequestIDLabel = new Label("0");
     private final JButton filterButton = new JButton("Фильтр");
 
     public Options(@NotNull Table table) {
         this.table = table;
-        this.numberOfSelectedRequestIdLabel = table.getNumberOfSelectedRequestIdLabel();
+        this.numberOfSelectedRequestIDLabel = table.getNumberOfSelectedRequestIDLabel();
 
         setLayout();
         setPanelBorder();
@@ -37,7 +37,7 @@ public final class Options extends JPanel {
     }
 
     private void setLayout() {
-        Label requestIdLabel = new Label("№ заявки");
+        Label requestIDLabel = new Label("№ заявки");
         Label creationDateLabel = new Label("Дата создания заявки");
         Label statusLabel = new Label("Статус заявки");
         Label commonNameLabel = new Label("Название организации");
@@ -48,9 +48,9 @@ public final class Options extends JPanel {
         Label slashLabel = new Label("/");
 
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
-        panel.add(numberOfSelectedRequestIdLabel);
+        panel.add(numberOfSelectedRequestIDLabel);
         panel.add(slashLabel);
-        panel.add(numberOfFoundRequestIdLabel);
+        panel.add(numberOfFoundRequestIDLabel);
 
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
@@ -59,8 +59,8 @@ public final class Options extends JPanel {
         layout.setAutoCreateContainerGaps(true);
 
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                .addComponent(requestIdLabel, Constants.LABEL_WIDTH, Constants.LABEL_WIDTH, Short.MAX_VALUE)
-                .addComponent(requestIdTextField, Constants.TEXT_FIELD_WIDTH, Constants.TEXT_FIELD_WIDTH, Short.MAX_VALUE)
+                .addComponent(requestIDLabel, Constants.LABEL_WIDTH, Constants.LABEL_WIDTH, Short.MAX_VALUE)
+                .addComponent(requestIDTextField, Constants.TEXT_FIELD_WIDTH, Constants.TEXT_FIELD_WIDTH, Short.MAX_VALUE)
                 .addComponent(creationDateLabel, Constants.LABEL_WIDTH, Constants.LABEL_WIDTH, Short.MAX_VALUE)
                 .addComponent(creationDateTextField, Constants.TEXT_FIELD_WIDTH, Constants.TEXT_FIELD_WIDTH, Short.MAX_VALUE)
                 .addComponent(statusLabel, Constants.LABEL_WIDTH, Constants.LABEL_WIDTH, Short.MAX_VALUE)
@@ -77,8 +77,8 @@ public final class Options extends JPanel {
                 .addComponent(filterButton, Constants.TEXT_FIELD_WIDTH, Constants.TEXT_FIELD_WIDTH, Short.MAX_VALUE));
 
         layout.setVerticalGroup(layout.createSequentialGroup()
-                .addComponent(requestIdLabel, Constants.LABEL_HEIGHT, Constants.LABEL_HEIGHT, Constants.LABEL_HEIGHT)
-                .addComponent(requestIdTextField, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT)
+                .addComponent(requestIDLabel, Constants.LABEL_HEIGHT, Constants.LABEL_HEIGHT, Constants.LABEL_HEIGHT)
+                .addComponent(requestIDTextField, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT)
                 .addComponent(creationDateLabel, Constants.LABEL_HEIGHT, Constants.LABEL_HEIGHT, Constants.LABEL_HEIGHT)
                 .addComponent(creationDateTextField, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT)
                 .addComponent(statusLabel, Constants.LABEL_HEIGHT, Constants.LABEL_HEIGHT, Constants.LABEL_HEIGHT)
@@ -100,7 +100,7 @@ public final class Options extends JPanel {
     }
 
     private void setListener() {
-        requestIdTextField.getDocument().addDocumentListener(new RequestListener(this));
+        requestIDTextField.getDocument().addDocumentListener(new RequestListener(this));
         filterButton.addActionListener(new ImportFilteredDataIEcp(this));
     }
 
@@ -108,8 +108,8 @@ public final class Options extends JPanel {
         return table;
     }
 
-    public TextField getRequestIdTextField() {
-        return requestIdTextField;
+    public TextField getRequestIDTextField() {
+        return requestIDTextField;
     }
 
     public TextField getCreationDateTextField() {
@@ -136,12 +136,12 @@ public final class Options extends JPanel {
         return SNILSTextField;
     }
 
-    public Label getNumberOfSelectedRequestIdLabel() {
-        return numberOfSelectedRequestIdLabel;
+    public Label getNumberOfSelectedRequestIDLabel() {
+        return numberOfSelectedRequestIDLabel;
     }
 
-    public Label getNumberOfFoundRequestIdLabel() {
-        return numberOfFoundRequestIdLabel;
+    public Label getNumberOfFoundRequestIDLabel() {
+        return numberOfFoundRequestIDLabel;
     }
 
     public JButton getFilterButton() {

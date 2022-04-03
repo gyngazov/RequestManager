@@ -1,7 +1,14 @@
 package backend.window.main.form.constant;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public enum GenderEnum implements Suppliable<String> {
+    @Expose()
+    @SerializedName(value = "M")
     M("Мужской", "M"),
+    @Expose()
+    @SerializedName(value = "F")
     F("Женский", "F");
 
     private final String title;

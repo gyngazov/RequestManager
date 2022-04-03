@@ -32,6 +32,7 @@ public final class MainWindow extends JFrame {
         UIManager.put("FileChooser.fileSizeHeaderText", "Размер");
         UIManager.put("FileChooser.fileTypeHeaderText", "Тип");
         UIManager.put("FileChooser.filesOfTypeLabelText", "Тип файла:");
+        UIManager.put("FileChooser.folderNameLabelText", "Имя папки:");
         UIManager.put("FileChooser.homeFolderToolTipText", "Рабочий стол");
         UIManager.put("FileChooser.listViewButtonToolTipText", "Список");
         UIManager.put("FileChooser.lookInLabelText", "Папка:");

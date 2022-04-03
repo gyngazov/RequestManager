@@ -39,7 +39,11 @@ public final class POSTRequest {
         if (responseCode == HttpsURLConnection.HTTP_OK) {
             response = getData(httpsURLConnection.getInputStream());
         } else {
-            response = getData(httpsURLConnection.getErrorStream()).replaceAll("\"", "").concat(".");
+            response = getData(httpsURLConnection.getErrorStream())
+                    .replaceAll("\s+", " ")
+                    .replace("№", "№ ")
+                    .replace("\"", "")
+                    .concat(".");
         }
     }
 

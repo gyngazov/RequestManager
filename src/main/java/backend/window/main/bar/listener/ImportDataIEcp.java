@@ -3,6 +3,7 @@ package backend.window.main.bar.listener;
 import backend.exception.BadRequestException;
 import backend.window.main.form.FormData;
 import backend.window.main.form.constant.DataTypeEnum;
+import backend.window.main.form.constant.EntrepreneurshipEnum;
 import frontend.controlElement.TextField;
 import frontend.window.main.MainForm;
 import frontend.window.optionDialog.InputPanel;
@@ -39,7 +40,7 @@ public final class ImportDataIEcp extends DataManipulation {
     }
 
     private @Nullable String getRequestID(ActionEvent e) {
-        String requestID;
+        String lineNumber;
 
         if (requestIDTextField == null) {
             String title = "Введите № заявки";
@@ -50,26 +51,35 @@ public final class ImportDataIEcp extends DataManipulation {
 
             InputPanel inputPanel = new InputPanel(title);
             if (showOptionDialog(inputPanel) == 0) {
-                requestID = inputPanel.getUserInput().getText();
+                lineNumber = inputPanel.getUserInput().getText();
             } else {
                 return null;
             }
         } else {
-            requestID = requestIDTextField.getText();
+            lineNumber = requestIDTextField.getText();
         }
 
-        return requestID;
+        return lineNumber;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String requestID = getRequestID(e);
-        if (requestID == null) return;
-
-        mainForm.getHeadApplicantCheckBox().setSelected(false);
+        String lineNumber = getRequestID(e);
+        if (lineNumber == null) return;
 
         try {
-            FormData data = FormData.generateOnRequestId(Integer.parseInt(requestID));
+            int requestID = Integer.parseInt(lineNumber);
+            if (requestID < DataManipulation.MIN_REQUEST_ID) {
+                throw new NumberFormatException();
+            }
+
+            FormData data = FormData.generateOnRequestID(requestID);
+            if (data.getEntrepreneurshipEnum() != EntrepreneurshipEnum.JURIDICAL_PERSON) {
+                data.setPersonINN(data.getOrgINN());
+            }
+
+            mainForm.getHeadApplicantCheckBox().setSelected(false);
+
             switch (dataTypeEnum) {
                 case ORGANIZATION_DATA -> displayOrganizationData(data);
                 case APPLICANT_DATA -> displayApplicantData(data);

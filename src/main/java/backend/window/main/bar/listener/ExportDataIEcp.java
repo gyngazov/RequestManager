@@ -5,6 +5,8 @@ import backend.iEcp.JSON.JSONChange;
 import backend.iEcp.JSON.JSONCreate;
 import backend.iEcp.POSTRequest;
 import backend.window.main.form.FormData;
+import backend.window.main.form.constant.EntrepreneurshipEnum;
+import backend.window.main.form.constant.TypeEnum;
 import backend.window.settings.Options;
 import com.google.gson.GsonBuilder;
 import frontend.controlElement.Label;
@@ -12,6 +14,7 @@ import frontend.controlElement.TextField;
 import frontend.window.main.MainForm;
 import frontend.window.optionDialog.InputPanel;
 import frontend.window.optionDialog.MessageDialog;
+import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.swing.*;
@@ -21,9 +24,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
 
 public final class ExportDataIEcp extends DataManipulation {
     private final TextField requestIDTextField;
@@ -34,19 +35,17 @@ public final class ExportDataIEcp extends DataManipulation {
         this.requestIDTextField = requestIDTextField;
     }
 
-    private boolean isRequestIDTextFieldFull() {
-        return !requestIDTextField.getText().isBlank();
-    }
-
     private String generateJSONChange(FormData data, int requestID) {
         return new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
                 .serializeNulls()
                 .create()
-                .toJson(new JSONChange(requestID, data), JSONChange.class);
+                .toJson(new JSONChange(data, requestID), JSONChange.class);
     }
 
     private String generateJSONCreate(FormData data) {
         return new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
                 .serializeNulls()
                 .create()
                 .toJson(new JSONCreate(data), JSONCreate.class);
@@ -61,26 +60,33 @@ public final class ExportDataIEcp extends DataManipulation {
                 options, options[1]);
     }
 
-    private void showNotification(int requestIDCount, Map<String, String> badRequestIDMap) {
+    private void showNotification(@NotNull Map<Integer, String> badRequestIDMap, int requestIDCount) {
         int badRequestIDCount = badRequestIDMap.size();
 
-        if (badRequestIDCount == 0) {
-            new MessageDialog.Info("Запрос успешно обработан!");
-        } else {
+        if (badRequestIDCount == requestIDCount || badRequestIDCount != 0) {
             PlainDocument plainDocument = new PlainDocument();
             try {
-                for (Map.Entry<String, String> entry : badRequestIDMap.entrySet()) {
-                    StringBuilder stringBuilder = new StringBuilder(entry.getKey());
+                for (Map.Entry<Integer, String> entry : badRequestIDMap.entrySet()) {
+                    StringBuilder stringBuilder = new StringBuilder(32);
+                    stringBuilder.append(entry.getKey());
                     stringBuilder.append(": ");
                     stringBuilder.append(entry.getValue());
                     stringBuilder.append(System.lineSeparator());
                     try {
                         plainDocument.insertString(plainDocument.getLength(), stringBuilder.toString(), null);
-                    } catch (BadLocationException ignored) {}
+                    } catch (BadLocationException ignored) {
+                    }
+                }
+                if (plainDocument.getLength() == 0) {
+                    plainDocument.insertString(0,
+                            "Ошибка при выполнении операции, повторите попытку."
+                                    + System.lineSeparator(),
+                            null);
                 }
                 plainDocument.replace(plainDocument.getLength() - System.lineSeparator().length(),
                         System.lineSeparator().length(), null, null);
-            } catch (BadLocationException ignored) {}
+            } catch (BadLocationException ignored) {
+            }
 
             JTextArea textArea = new JTextArea(plainDocument, null, Math.min(badRequestIDCount, 10), 0);
             textArea.setEditable(false);
@@ -91,14 +97,16 @@ public final class ExportDataIEcp extends DataManipulation {
                             + " из "
                             + requestIDCount + ".<br>Не удалось внести изменения в следующие заявки:</body></html>"),
                     new JScrollPane(textArea)});
+        } else {
+            new MessageDialog.Info("Запрос успешно обработан!");
         }
     }
 
-    private void showNotification(int requestIDCount, int badRequestIDCount) {
-        if (badRequestIDCount == 0) {
-            new MessageDialog.Info("Запрос успешно обработан!");
-        } else if (badRequestIDCount == requestIDCount) {
+    private void showNotification(int badRequestIDCount, int requestIDCount) {
+        if (badRequestIDCount == requestIDCount) {
             new MessageDialog.Error("Ошибка при выполнении операции, повторите попытку.");
+        } else if (badRequestIDCount == 0) {
+            new MessageDialog.Info("Запрос успешно обработан!");
         } else {
             new MessageDialog.Warning("Успешно создано заявок: "
                     + (requestIDCount - badRequestIDCount)
@@ -107,40 +115,41 @@ public final class ExportDataIEcp extends DataManipulation {
         }
     }
 
-    private void sendChangeRequestID(FormData data) {
-        String[] requestIDs = requestIDTextField.getText().split("[ ,;]+");
-        Map<String, String> badRequestIDMap = new TreeMap<>();
+    private void sendChangeRequestID(FormData data, @NotNull String requestIDString) {
+        int[] requestIDs = Arrays.stream(requestIDString.split("[^\\d]+"))
+                .mapToInt(Integer::parseInt)
+                .filter(requestID -> requestID >= DataManipulation.MIN_REQUEST_ID)
+                .distinct()
+                .toArray();
+        Map<Integer, String> badRequestIDMap = new TreeMap<>();
 
-        for (String ID : requestIDs) {
+        for (int requestID : requestIDs) {
             try {
-                int requestID = Integer.parseInt(ID);
                 String JSON = generateJSONChange(data, requestID);
                 if (Options.read().isVerifiedOrgInn()) {
-                    FormData dataValidation = FormData.generateOnRequestId(requestID);
+                    FormData dataValidation = FormData.generateOnRequestID(requestID);
                     if (!Objects.equals(dataValidation.getOrgINN(), data.getOrgINN())) {
-                        badRequestIDMap.put(ID, "Заявка принадлежит другому юридическому лицу.");
+                        badRequestIDMap.put(requestID, "Заявка принадлежит другому юридическому лицу.");
                         continue;
                     }
                 }
 
                 POSTRequest postRequest = new POSTRequest(POSTRequest.CHANGE_REQUEST, JSON);
                 if (postRequest.getResponseCode() != HttpsURLConnection.HTTP_OK) {
-                    badRequestIDMap.put(ID, postRequest.getResponse());
+                    badRequestIDMap.put(requestID, postRequest.getResponse());
                 }
-            } catch (NumberFormatException exception) {
-                badRequestIDMap.put(ID, "Некорректный номер заявки.");
             } catch (BadRequestException exception) {
-                badRequestIDMap.put(ID, exception.getMessage());
+                badRequestIDMap.put(requestID, exception.getMessage());
             } catch (SocketTimeoutException exception) {
-                badRequestIDMap.put(ID, "Время ожидания операции истекло.");
+                badRequestIDMap.put(requestID, "Время ожидания операции истекло.");
             } catch (IOException exception) {
-                badRequestIDMap.put(ID, "Ошибка получения данных.");
+                badRequestIDMap.put(requestID, "Ошибка получения данных.");
             } catch (Exception exception) {
-                badRequestIDMap.put(ID, exception.getMessage());
+                badRequestIDMap.put(requestID, exception.getMessage());
             }
         }
 
-        showNotification(requestIDs.length, badRequestIDMap);
+        showNotification(badRequestIDMap, requestIDs.length);
     }
 
     private void sendCreateRequestID(FormData data) {
@@ -149,7 +158,7 @@ public final class ExportDataIEcp extends DataManipulation {
         while (true) {
             if (showOptionDialog(userInput) == 0) {
                 try {
-                    int requestIDCount = Integer.parseInt(userInput.getUserInput().getText());
+                    int requestIDCount = Integer.parseInt(Objects.requireNonNullElse(userInput.getUserInput().getText(), "0"));
                     int badRequestIDCount = 0;
 
                     for (int i = 0; i < requestIDCount; i++) {
@@ -163,7 +172,7 @@ public final class ExportDataIEcp extends DataManipulation {
                         }
                     }
 
-                    showNotification(requestIDCount, badRequestIDCount);
+                    showNotification(badRequestIDCount, requestIDCount);
                     break;
                 } catch (NumberFormatException exception) {
                     new MessageDialog.Error("Ошибка ввода данных, повторите ввод.");
@@ -180,10 +189,22 @@ public final class ExportDataIEcp extends DataManipulation {
         if (data == null) {
             new MessageDialog.Error("В карточке организации укажите её форму и повторите попытку.");
         } else {
-            if (isRequestIDTextFieldFull()) {
-                sendChangeRequestID(data);
+            if (data.getTypeEnum() == TypeEnum.FID_DOC) {
+                data.setSeries(TypeEnum.FID_DOC_SERIES);
+                data.setNumber(TypeEnum.FID_DOC_NUMBER);
+                data.setIssueId(TypeEnum.FID_DOC_ISSUE_ID);
+            }
+
+            FormData copied = FormData.copy(data);
+            if (copied.getEntrepreneurshipEnum() != EntrepreneurshipEnum.JURIDICAL_PERSON) {
+                copied.setOrgINN(data.getPersonINN());
+            }
+
+            String requestIDString = requestIDTextField.getText();
+            if (requestIDString != null && !requestIDString.isBlank()) {
+                sendChangeRequestID(copied, requestIDString);
             } else {
-                sendCreateRequestID(data);
+                sendCreateRequestID(copied);
             }
         }
     }

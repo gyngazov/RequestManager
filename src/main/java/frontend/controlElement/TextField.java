@@ -1,11 +1,12 @@
 package frontend.controlElement;
 
 import backend.util.Constants;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import java.awt.*;
+import javax.swing.text.Document;
 import java.util.function.Predicate;
 
 public class TextField extends JTextField implements DocumentListener {
@@ -46,50 +47,60 @@ public class TextField extends JTextField implements DocumentListener {
         this(null);
     }
 
-    private Color getBackground(String text) {
-        return predicate == null
-                ? Constants.TEXT_FIELD_ACTIVE_BACKGROUND
-                : predicate.test(text) ? Constants.TEXT_FIELD_VALID_BACKGROUND : Constants.TEXT_FIELD_INVALID_BACKGROUND;
+    public void setPredicate(Predicate<String> predicate) {
+        this.predicate = predicate;
     }
 
-    private void updateBackground(String text) {
-        setBackground(isEnabled() && isEditable()
-                ? text.isEmpty() ? Constants.TEXT_FIELD_ACTIVE_BACKGROUND : getBackground(text)
+    public void updateBackground() {
+        String txt = getText();
+        setBackground(isEnabled() && isEditable() ?
+                txt == null || txt.isEmpty() ?
+                        Constants.TEXT_FIELD_ACTIVE_BACKGROUND
+                        : predicate == null ?
+                        Constants.TEXT_FIELD_ACTIVE_BACKGROUND
+                        : predicate.test(txt) ?
+                        Constants.TEXT_FIELD_VALID_BACKGROUND
+                        : Constants.TEXT_FIELD_INVALID_BACKGROUND
                 : Constants.TEXT_FIELD_INACTIVE_BACKGROUND);
     }
 
-    public void setPredicate(Predicate<String> predicate) {
-        this.predicate = predicate;
+    @Override
+    public @Nullable String getText() {
+        Document doc = getDocument();
+        String txt;
+        try {
+            txt = doc.getText(0, doc.getLength());
+        } catch (Exception e) {
+            txt = null;
+        }
+        return txt;
     }
 
     @Override
     public void setEditable(boolean b) {
         super.setEditable(b);
-        if (getDocument() != null && b) updateBackground(getText());
+        updateBackground();
     }
 
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        if (enabled) {
-            updateBackground(getText());
-        } else {
+        if (!enabled) {
             setText(null);
-            setBackground(Constants.TEXT_FIELD_INACTIVE_BACKGROUND);
         }
+        updateBackground();
     }
 
     @Override
     public void insertUpdate(DocumentEvent e) {
-        updateBackground(getText());
+        updateBackground();
     }
 
     @Override
     public void removeUpdate(DocumentEvent e) {
-        updateBackground(getText());
+        updateBackground();
     }
 
     @Override
-    public void changedUpdate(DocumentEvent e) {
-    }
+    public void changedUpdate(DocumentEvent e) {}
 }

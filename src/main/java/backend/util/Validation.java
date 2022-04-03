@@ -118,10 +118,6 @@ public final class Validation {
         return replaceSpaces(issueId).replaceAll("[ \\-]+", "");
     }
 
-    public static String getFormattedRequestId(String requestId) {
-        return replaceSpaces(requestId);
-    }
-
     public static String getFormattedCurrentDirectory(String currentDirectory) {
         return replaceSpaces(currentDirectory);
     }
@@ -358,7 +354,7 @@ public final class Validation {
         series = getFormattedSeries(series);
         if ("RF_PASSPORT".equals(type)) {
             return matches("^[0-9]{4}$", series);
-        } else return series.isBlank();
+        } else return !series.isBlank();
     }
 
     public static boolean isCorrectNumber(String number, TypeEnum typeEnum) {
@@ -383,10 +379,6 @@ public final class Validation {
         if ("RF_PASSPORT".equals(type)) {
             return matches("^[0-9]{6}$", issueId);
         } else return !issueId.isBlank();
-    }
-
-    public static boolean isCorrectRequestId(String requestId) {
-        return matches("^[0-9]{5,}$", getFormattedRequestId(requestId));
     }
 
     public static boolean isCorrectCurrentDirectory(String currentDirectory) {
