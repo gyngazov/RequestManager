@@ -9,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public final class ToolBar extends JToolBar {
+    private static ToolBar toolBar;
+
     private final TextField requestIDTextField = new TextField();
 
     private JButton importDataPDF;
@@ -18,11 +20,11 @@ public final class ToolBar extends JToolBar {
     private JButton exportDataCFG;
     private JButton deleteData;
 
-    public ToolBar(MainForm mainForm) {
+    private ToolBar() {
         setIconButton();
         buildToolBar();
         setToolTipText();
-        setListener(mainForm);
+        setListener();
     }
 
     private Icon getIcon(String name) {
@@ -86,14 +88,17 @@ public final class ToolBar extends JToolBar {
         deleteData.setToolTipText("Очистить всё");
     }
 
-    private void setListener(MainForm mainForm) {
-        importDataPDF.addActionListener(new ImportDataPDF(mainForm));
-        importDataIEcp.addActionListener(new ImportDataIEcp(mainForm, requestIDTextField, DataTypeEnum.ALL_DATA));
-        exportDataIEcp.addActionListener(new ExportDataIEcp(mainForm, requestIDTextField));
-        deleteData.addActionListener(new DataReset(mainForm, DataTypeEnum.ALL_DATA));
+    private void setListener() {
+        importDataPDF.addActionListener(new ImportDataPDF());
+        importDataIEcp.addActionListener(new ImportDataIEcp(requestIDTextField, DataTypeEnum.ALL_DATA));
+        exportDataIEcp.addActionListener(new ExportDataIEcp(requestIDTextField));
+        deleteData.addActionListener(new DataReset(DataTypeEnum.ALL_DATA));
     }
 
-    public TextField getRequestIDTextField() {
-        return requestIDTextField;
+    public static ToolBar getInstance() {
+        if (toolBar == null) {
+            toolBar = new ToolBar();
+        }
+        return toolBar;
     }
 }

@@ -2,17 +2,15 @@ package frontend.window.main;
 
 import backend.window.main.bar.listener.*;
 import backend.window.main.form.constant.DataTypeEnum;
-import frontend.window.main.filter.Table;
-import frontend.window.optionDialog.Setting;
+import frontend.window.optionDialog.SoftwareConfigurationDialog;
 import frontend.window.optionDialog.About;
 
 import javax.swing.*;
 
 final class MenuBar extends JMenuBar {
-    private final Table table;
-    private final MainForm mainForm;
+    private static MenuBar menuBar;
 
-    private final JMenuItem settings = new JMenuItem("Настройки...");
+    private final JMenuItem configuration = new JMenuItem("Настройки...");
     private final JMenuItem exit = new JMenuItem("Выход");
 
     private final JMenuItem importingDataPDF = new JMenuItem("Выгрузить сведения из ЕГРЮЛ/ЕГРИП...");
@@ -37,10 +35,7 @@ final class MenuBar extends JMenuBar {
 
     private final JMenuItem about = new JMenuItem("О программе...");
 
-    public MenuBar(Table table, MainForm mainForm) {
-        this.table = table;
-        this.mainForm = mainForm;
-
+    private MenuBar() {
         addMenuBar();
         setListener();
     }
@@ -56,7 +51,7 @@ final class MenuBar extends JMenuBar {
 
         JMenu attach = new JMenu("Прикрепить");
 
-        file.add(settings);
+        file.add(configuration);
         file.addSeparator();
         file.add(exit);
 
@@ -94,22 +89,29 @@ final class MenuBar extends JMenuBar {
     }
 
     private void setListener() {
-        settings.addActionListener(e -> new Setting());
-        exit.addActionListener(e -> System.exit(0));
+        configuration.addActionListener(e -> SoftwareConfigurationDialog.getInstance().buildFrame(MainWindow.getInstance()));
+        exit.addActionListener(e -> MainWindow.getInstance().dispose());
 
-        importingDataPDF.addActionListener(new ImportDataPDF(mainForm));
+        importingDataPDF.addActionListener(new ImportDataPDF());
 
-        importingOrganizationDataIEcp.addActionListener(new ImportDataIEcp(mainForm, null, DataTypeEnum.ORGANIZATION_DATA));
-        importingApplicantDataIEcp.addActionListener(new ImportDataIEcp(mainForm, null, DataTypeEnum.APPLICANT_DATA));
-        importingDataIEcp.addActionListener(new ImportDataIEcp(mainForm, null, DataTypeEnum.ALL_DATA));
+        importingOrganizationDataIEcp.addActionListener(new ImportDataIEcp(null, DataTypeEnum.ORGANIZATION_DATA));
+        importingApplicantDataIEcp.addActionListener(new ImportDataIEcp(null, DataTypeEnum.APPLICANT_DATA));
+        importingDataIEcp.addActionListener(new ImportDataIEcp(null, DataTypeEnum.ALL_DATA));
 
-        deletingOrganizationData.addActionListener(new DataReset(mainForm, DataTypeEnum.ORGANIZATION_DATA));
-        deletingApplicantData.addActionListener(new DataReset(mainForm, DataTypeEnum.APPLICANT_DATA));
-        deletingData.addActionListener(new DataReset(mainForm, DataTypeEnum.ALL_DATA));
+        deletingOrganizationData.addActionListener(new DataReset(DataTypeEnum.ORGANIZATION_DATA));
+        deletingApplicantData.addActionListener(new DataReset(DataTypeEnum.APPLICANT_DATA));
+        deletingData.addActionListener(new DataReset(DataTypeEnum.ALL_DATA));
 
         packingFiles.addActionListener(new PackingFiles());
-        attachedFile.addActionListener(new ExportAttachedFileIEcp(table));
+        attachedFile.addActionListener(new ExportAttachedFileIEcp());
 
         about.addActionListener(e -> new About());
+    }
+
+    public static MenuBar getInstance() {
+        if (menuBar == null) {
+            menuBar = new MenuBar();
+        }
+        return menuBar;
     }
 }

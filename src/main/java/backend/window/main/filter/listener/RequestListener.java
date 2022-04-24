@@ -2,35 +2,35 @@ package backend.window.main.filter.listener;
 
 import backend.window.main.filter.constant.StatusEnum;
 import org.jetbrains.annotations.NotNull;
-import frontend.window.main.filter.Options;
+import frontend.window.main.filter.FilterOptions;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-public record RequestListener(Options options) implements DocumentListener {
+public record RequestListener(FilterOptions filterOptions) implements DocumentListener {
 
     private void setEditable(@NotNull DocumentEvent e) {
         if (e.getDocument().getLength() == 0) {
-            options.getCreationDateTextField().setEditable(true);
-            options.getStatusComboBox().setEnabled(true);
-            options.getCommonNameTextField().setEditable(true);
-            options.getOrgINNTextField().setEditable(true);
-            options.getLastNameTextField().setEditable(true);
-            options.getSNILSTextField().setEditable(true);
+            filterOptions.getCreationDateTextField().setEditable(true);
+            filterOptions.getStatusComboBox().setEnabled(true);
+            filterOptions.getCommonNameTextField().setEditable(true);
+            filterOptions.getOrgINNTextField().setEditable(true);
+            filterOptions.getLastNameTextField().setEditable(true);
+            filterOptions.getSNILSTextField().setEditable(true);
         } else {
-            options.getCreationDateTextField().setEditable(false);
-            options.getStatusComboBox().setEnabled(false);
-            options.getCommonNameTextField().setEditable(false);
-            options.getOrgINNTextField().setEditable(false);
-            options.getLastNameTextField().setEditable(false);
-            options.getSNILSTextField().setEditable(false);
+            filterOptions.getCreationDateTextField().setEditable(false);
+            filterOptions.getStatusComboBox().setEnabled(false);
+            filterOptions.getCommonNameTextField().setEditable(false);
+            filterOptions.getOrgINNTextField().setEditable(false);
+            filterOptions.getLastNameTextField().setEditable(false);
+            filterOptions.getSNILSTextField().setEditable(false);
 
-            options.getCreationDateTextField().setText("");
-            options.getStatusComboBox().setSelectedItem(StatusEnum.WITHOUT_STATUS);
-            options.getCommonNameTextField().setText("");
-            options.getOrgINNTextField().setText("");
-            options.getLastNameTextField().setText("");
-            options.getSNILSTextField().setText("");
+            filterOptions.getCreationDateTextField().setText("");
+            filterOptions.getStatusComboBox().setSelectedItem(StatusEnum.WITHOUT_STATUS);
+            filterOptions.getCommonNameTextField().setText("");
+            filterOptions.getOrgINNTextField().setText("");
+            filterOptions.getLastNameTextField().setText("");
+            filterOptions.getSNILSTextField().setText("");
         }
     }
 

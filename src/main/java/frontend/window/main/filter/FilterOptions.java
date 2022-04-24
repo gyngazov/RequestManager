@@ -1,36 +1,32 @@
 package frontend.window.main.filter;
 
 import backend.util.Constants;
-import backend.util.Validation;
+import backend.util.Validatable;
 import backend.window.main.filter.listener.ImportFilteredDataIEcp;
 import backend.window.main.filter.listener.RequestListener;
 import frontend.controlElement.ComboBox;
 import frontend.controlElement.Label;
 import frontend.controlElement.TextField;
 import backend.window.main.filter.constant.StatusEnum;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 
-public final class Options extends JPanel {
-    private final Table table;
+public final class FilterOptions extends JPanel {
+    private static FilterOptions filterOptions;
 
     private final TextField requestIDTextField = new TextField();
     private final TextField creationDateTextField = new TextField();
     private final ComboBox<StatusEnum> statusComboBox = new ComboBox.Status();
     private final TextField commonNameTextField = new TextField();
-    private final TextField orgINNTextField = new TextField(Validation::isCorrectOrgINN);
+    private final TextField orgINNTextField = new TextField(Validatable::isCorrectOrgINN);
     private final TextField lastNameTextField = new TextField();
-    private final TextField SNILSTextField = new TextField(Validation::isCorrectSNILS);
-    private final Label numberOfSelectedRequestIDLabel;
-    private final Label numberOfFoundRequestIDLabel = new Label("0");
+    private final TextField SNILSTextField = new TextField(Validatable::isCorrectSNILS);
+    private final Label selectedRequestIDLabel = new Label("0");
+    private final Label foundRequestIDLabel = new Label("0");
     private final JButton filterButton = new JButton("Фильтр");
 
-    public Options(@NotNull Table table) {
-        this.table = table;
-        this.numberOfSelectedRequestIDLabel = table.getNumberOfSelectedRequestIDLabel();
-
+    private FilterOptions() {
         setLayout();
         setPanelBorder();
         setListener();
@@ -45,12 +41,10 @@ public final class Options extends JPanel {
         Label lastNameLabel = new Label("Фамилия заявителя");
         Label SNILSLabel = new Label("СНИЛС заявителя");
 
-        Label slashLabel = new Label("/");
-
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
-        panel.add(numberOfSelectedRequestIDLabel);
-        panel.add(slashLabel);
-        panel.add(numberOfFoundRequestIDLabel);
+        JPanel score = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
+        score.add(selectedRequestIDLabel);
+        score.add(new Label("/"));
+        score.add(foundRequestIDLabel);
 
         GroupLayout layout = new GroupLayout(this);
         setLayout(layout);
@@ -73,7 +67,7 @@ public final class Options extends JPanel {
                 .addComponent(lastNameTextField, Constants.TEXT_FIELD_WIDTH, Constants.TEXT_FIELD_WIDTH, Short.MAX_VALUE)
                 .addComponent(SNILSLabel, Constants.LABEL_WIDTH, Constants.LABEL_WIDTH, Short.MAX_VALUE)
                 .addComponent(SNILSTextField, Constants.TEXT_FIELD_WIDTH, Constants.TEXT_FIELD_WIDTH, Short.MAX_VALUE)
-                .addComponent(panel, Constants.LABEL_WIDTH, Constants.LABEL_WIDTH, Short.MAX_VALUE)
+                .addComponent(score, Constants.LABEL_WIDTH, Constants.LABEL_WIDTH, Short.MAX_VALUE)
                 .addComponent(filterButton, Constants.TEXT_FIELD_WIDTH, Constants.TEXT_FIELD_WIDTH, Short.MAX_VALUE));
 
         layout.setVerticalGroup(layout.createSequentialGroup()
@@ -91,7 +85,7 @@ public final class Options extends JPanel {
                 .addComponent(lastNameTextField, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT)
                 .addComponent(SNILSLabel, Constants.LABEL_HEIGHT, Constants.LABEL_HEIGHT, Constants.LABEL_HEIGHT)
                 .addComponent(SNILSTextField, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT)
-                .addComponent(panel, Constants.LABEL_HEIGHT, Constants.LABEL_HEIGHT, Constants.LABEL_HEIGHT)
+                .addComponent(score, Constants.LABEL_HEIGHT, Constants.LABEL_HEIGHT, Constants.LABEL_HEIGHT)
                 .addComponent(filterButton, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT));
     }
 
@@ -102,10 +96,6 @@ public final class Options extends JPanel {
     private void setListener() {
         requestIDTextField.getDocument().addDocumentListener(new RequestListener(this));
         filterButton.addActionListener(new ImportFilteredDataIEcp(this));
-    }
-
-    public Table getTable() {
-        return table;
     }
 
     public TextField getRequestIDTextField() {
@@ -136,15 +126,18 @@ public final class Options extends JPanel {
         return SNILSTextField;
     }
 
-    public Label getNumberOfSelectedRequestIDLabel() {
-        return numberOfSelectedRequestIDLabel;
+    public Label getSelectedRequestIDLabel() {
+        return selectedRequestIDLabel;
     }
 
-    public Label getNumberOfFoundRequestIDLabel() {
-        return numberOfFoundRequestIDLabel;
+    public Label getFoundRequestIDLabel() {
+        return foundRequestIDLabel;
     }
 
-    public JButton getFilterButton() {
-        return filterButton;
+    public static FilterOptions getInstance() {
+        if (filterOptions == null) {
+            filterOptions = new FilterOptions();
+        }
+        return filterOptions;
     }
 }

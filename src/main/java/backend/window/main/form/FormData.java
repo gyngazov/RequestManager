@@ -3,7 +3,7 @@ package backend.window.main.form;
 import backend.exception.BadRequestException;
 import backend.iEcp.JSON.JSONView;
 import backend.iEcp.POSTRequest;
-import backend.util.Validation;
+import backend.util.Validatable;
 import backend.window.main.filter.constant.StatusEnum;
 import backend.window.main.form.constant.*;
 import com.google.gson.Gson;
@@ -18,6 +18,8 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 public final class FormData {
     @Expose(serialize = false, deserialize = false)
@@ -172,8 +174,21 @@ public final class FormData {
         }
     }
 
-    private boolean nonBlankString(String text) {
-        return text != null && !text.isBlank();
+    private @Nullable String getFieldValue(String originalText,
+                                           UnaryOperator<String> formattedText, Predicate<String> isFormattedTextCorrect,
+                                           String defaultText) {
+        return Validatable.isNonBlank(originalText) ?
+                verifiable ?
+                        isFormattedTextCorrect.test(originalText) ?
+                                formattedText.apply(originalText)
+                                : null
+                        : originalText
+                : defaultText;
+    }
+
+    private @Nullable String getFieldValue(String originalText,
+                                           UnaryOperator<String> operator, Predicate<String> isFormattedTextCorrect) {
+        return getFieldValue(originalText, operator, isFormattedTextCorrect, null);
     }
 
     private void setProduct(int[] product) {
@@ -210,117 +225,50 @@ public final class FormData {
     }
 
     public void setCommonName(String commonName) {
-        if (nonBlankString(commonName)) {
-            if (verifiable) {
-                commonName = Validation.getFormattedOrganizationName(commonName);
-                if (Validation.isCorrectOrganizationName(commonName)) {
-                    this.commonName = commonName;
-                }
-            } else {
-                this.commonName = commonName;
-            }
-        }
+        this.commonName = getFieldValue(commonName,
+                Validatable::getFormattedOrganizationName, Validatable::isCorrectOrganizationName);
     }
 
     public void setDepartment(String department) {
-        if (nonBlankString(department)) {
-            if (verifiable) {
-                department = Validation.getFormattedOrganizationName(department);
-                if (Validation.isCorrectOrganizationName(department)) {
-                    this.department = department;
-                }
-            } else {
-                this.department = department;
-            }
-        }
+        this.department = getFieldValue(department,
+                Validatable::getFormattedOrganizationName, Validatable::isCorrectOrganizationName,
+                "");
     }
 
     public void setKPP(String KPP) {
-        if (nonBlankString(KPP)) {
-            if (verifiable) {
-                KPP = Validation.getFormattedKPP(KPP);
-                if (Validation.isCorrectKPP(KPP)) {
-                    this.KPP = KPP;
-                }
-            } else {
-                this.KPP = KPP;
-            }
-        }
+        this.KPP = getFieldValue(KPP,
+                Validatable::getFormattedKPP, Validatable::isCorrectKPP);
     }
 
     public void setOrgINN(String orgINN) {
-        if (nonBlankString(orgINN)) {
-            if (verifiable) {
-                orgINN = Validation.getFormattedOrgINN(orgINN);
-                if (Validation.isCorrectOrgINN(orgINN)) {
-                    this.orgINN = orgINN;
-                }
-            } else {
-                this.orgINN = orgINN;
-            }
-        }
+        this.orgINN = getFieldValue(orgINN,
+                Validatable::getFormattedOrgINN, Validatable::isCorrectOrgINN);
     }
 
     public void setOGRN(String OGRN) {
-        if (nonBlankString(OGRN)) {
-            if (verifiable) {
-                OGRN = Validation.getFormattedOGRN(OGRN);
-                if (Validation.isCorrectOGRN(OGRN)) {
-                    this.OGRN = OGRN;
-                }
-            } else {
-                this.OGRN = OGRN;
-            }
-        }
+        this.OGRN = getFieldValue(OGRN,
+                Validatable::getFormattedOGRN, Validatable::isCorrectOGRN);
     }
 
     public void setOGRNIP(String OGRNIP) {
-        if (nonBlankString(OGRNIP)) {
-            if (verifiable) {
-                OGRNIP = Validation.getFormattedOGRNIP(OGRNIP);
-                if (Validation.isCorrectOGRNIP(OGRNIP)) {
-                    this.OGRNIP = OGRNIP;
-                }
-            } else {
-                this.OGRNIP = OGRNIP;
-            }
-        }
+        this.OGRNIP = getFieldValue(OGRNIP,
+                Validatable::getFormattedOGRNIP, Validatable::isCorrectOGRNIP);
     }
 
     public void setOrgPhone(String orgPhone) {
-        if (nonBlankString(orgPhone)) {
-            if (verifiable) {
-                orgPhone = Validation.getFormattedPhone(orgPhone);
-                if (Validation.isCorrectPhone(orgPhone)) {
-                    this.orgPhone = orgPhone;
-                }
-            } else {
-                this.orgPhone = orgPhone;
-            }
-        }
+        this.orgPhone = getFieldValue(orgPhone,
+                Validatable::getFormattedPhone, Validatable::isCorrectPhone);
     }
 
     public void setIndex(String index) {
-        if (nonBlankString(index)) {
-            if (verifiable) {
-                index = Validation.getFormattedIndex(index);
-                if (Validation.isCorrectIndex(index)) {
-                    this.index = index;
-                }
-            } else {
-                this.index = index;
-            }
-        }
+        this.index = getFieldValue(index,
+                Validatable::getFormattedIndex, Validatable::isCorrectIndex,
+                "");
     }
 
     public void setCountryName(String countryName) {
-        if (nonBlankString(countryName)) {
-            if (verifiable) {
-                this.countryName = Validation.getFormattedCountryName(countryName);
-            } else {
-                this.countryName = countryName;
-            }
-        }
+        this.countryName = getFieldValue(countryName,
+                Validatable::getFormattedCountryName, anyText -> true);
     }
 
     public void setStateOrProvinceNameLaw(int stateOrProvinceNameLaw) {
@@ -328,23 +276,13 @@ public final class FormData {
     }
 
     public void setLocalityNameLaw(String localityNameLaw) {
-        if (nonBlankString(localityNameLaw)) {
-            if (verifiable) {
-                this.localityNameLaw = Validation.getFormattedLocalityName(localityNameLaw);
-            } else {
-                this.localityNameLaw = localityNameLaw;
-            }
-        }
+        this.localityNameLaw = getFieldValue(localityNameLaw,
+                Validatable::getFormattedLocalityName, anyText -> true);
     }
 
     public void setStreetAddressLaw(String streetAddressLaw) {
-        if (nonBlankString(streetAddressLaw)) {
-            if (verifiable) {
-                this.streetAddressLaw = Validation.getFormattedStreetAddress(streetAddressLaw);
-            } else {
-                this.streetAddressLaw = streetAddressLaw;
-            }
-        }
+        this.streetAddressLaw = getFieldValue(streetAddressLaw,
+                Validatable::getFormattedStreetAddress, anyText -> true);
     }
 
     public void setStateOrProvinceName(int stateOrProvinceName) {
@@ -352,88 +290,40 @@ public final class FormData {
     }
 
     public void setLocalityName(String localityName) {
-        if (nonBlankString(localityName)) {
-            if (verifiable) {
-                this.localityName = Validation.getFormattedLocalityName(localityName);
-            } else {
-                this.localityName = localityName;
-            }
-        }
+        this.localityName = getFieldValue(localityName,
+                Validatable::getFormattedLocalityName, anyText -> true);
     }
 
     public void setStreetAddress(String streetAddress) {
-        if (nonBlankString(streetAddress)) {
-            if (verifiable) {
-                this.streetAddress = Validation.getFormattedStreetAddress(streetAddress);
-            } else {
-                this.streetAddress = streetAddress;
-            }
-        }
+        this.streetAddress = getFieldValue(streetAddress,
+                Validatable::getFormattedStreetAddress, anyText -> true,
+                "");
     }
 
     public void setHeadLastName(String headLastName) {
-        if (nonBlankString(headLastName)) {
-            if (verifiable) {
-                headLastName = Validation.getFormattedPersonLastName(headLastName);
-                if (Validation.isCorrectPersonLastName(headLastName)) {
-                    this.headLastName = headLastName;
-                }
-            } else {
-                this.headLastName = headLastName;
-            }
-        }
+        this.headLastName = getFieldValue(headLastName,
+                Validatable::getFormattedPersonLastName, Validatable::isCorrectPersonLastName);
     }
 
     public void setHeadFirstName(String headFirstName) {
-        if (nonBlankString(headFirstName)) {
-            if (verifiable) {
-                headFirstName = Validation.getFormattedPersonFirstName(headFirstName);
-                if (Validation.isCorrectPersonFirstName(headFirstName)) {
-                    this.headFirstName = headFirstName;
-                }
-            } else {
-                this.headFirstName = headFirstName;
-            }
-        }
+        this.headFirstName = getFieldValue(headFirstName,
+                Validatable::getFormattedPersonFirstName, Validatable::isCorrectPersonFirstName);
     }
 
     public void setHeadMiddleName(String headMiddleName) {
-        if (nonBlankString(headMiddleName)) {
-            if (verifiable) {
-                headMiddleName = Validation.getFormattedPersonMiddleName(headMiddleName);
-                if (Validation.isCorrectPersonMiddleName(headMiddleName)) {
-                    this.headMiddleName = headMiddleName;
-                }
-            } else {
-                this.headMiddleName = headMiddleName;
-            }
-        }
+        this.headMiddleName = getFieldValue(headMiddleName,
+                Validatable::getFormattedPersonMiddleName, Validatable::isCorrectPersonMiddleName,
+                "");
     }
 
     public void setHeadPersonINN(String headPersonINN) {
-        if (nonBlankString(headPersonINN)) {
-            if (verifiable) {
-                headPersonINN = Validation.getFormattedPersonINN(headPersonINN);
-                if (Validation.isCorrectPersonINN(headPersonINN)) {
-                    this.headPersonINN = headPersonINN;
-                }
-            } else {
-                this.headPersonINN = headPersonINN;
-            }
-        }
+        this.headPersonINN = getFieldValue(headPersonINN,
+                Validatable::getFormattedPersonINN, Validatable::isCorrectPersonINN);
     }
 
     public void setHeadTitle(String headTitle) {
-        if (nonBlankString(headTitle)) {
-            if (verifiable) {
-                headTitle = Validation.getFormattedPersonTitle(headTitle);
-                if (Validation.isCorrectPersonTitle(headTitle)) {
-                    this.headTitle = headTitle;
-                }
-            } else {
-                this.headTitle = headTitle;
-            }
-        }
+        this.headTitle = getFieldValue(headTitle,
+                Validatable::getFormattedPersonTitle, Validatable::isCorrectPersonTitle);
     }
 
     public void setIdentificationKindEnum(IdentificationKindEnum identificationKindEnum) {
@@ -441,42 +331,20 @@ public final class FormData {
     }
 
     public void setLastName(String lastName) {
-        if (nonBlankString(lastName)) {
-            if (verifiable) {
-                lastName = Validation.getFormattedPersonLastName(lastName);
-                if (Validation.isCorrectPersonLastName(lastName)) {
-                    this.lastName = lastName;
-                }
-            } else {
-                this.lastName = lastName;
-            }
-        }
+        this.lastName = getFieldValue(lastName,
+                Validatable::getFormattedPersonLastName, Validatable::isCorrectPersonLastName);
     }
 
     public void setFirstName(String firstName) {
-        if (nonBlankString(firstName)) {
-            if (verifiable) {
-                firstName = Validation.getFormattedPersonFirstName(firstName);
-                if (Validation.isCorrectPersonFirstName(firstName)) {
-                    this.firstName = firstName;
-                }
-            } else {
-                this.firstName = firstName;
-            }
-        }
+        this.firstName = getFieldValue(firstName,
+                Validatable::getFormattedPersonFirstName, Validatable::isCorrectPersonFirstName);
+
     }
 
     public void setMiddleName(String middleName) {
-        if (nonBlankString(middleName)) {
-            if (verifiable) {
-                middleName = Validation.getFormattedPersonMiddleName(middleName);
-                if (Validation.isCorrectPersonMiddleName(middleName)) {
-                    this.middleName = middleName;
-                }
-            } else {
-                this.middleName = middleName;
-            }
-        }
+        this.middleName = getFieldValue(middleName,
+                Validatable::getFormattedPersonMiddleName, Validatable::isCorrectPersonMiddleName,
+                "");
     }
 
     public void setGenderEnum(GenderEnum genderEnum) {
@@ -484,94 +352,38 @@ public final class FormData {
     }
 
     public void setSNILS(String SNILS) {
-        if (nonBlankString(SNILS)) {
-            if (verifiable) {
-                SNILS = Validation.getFormattedSNILS(SNILS);
-                if (Validation.isCorrectSNILS(SNILS)) {
-                    this.SNILS = SNILS;
-                }
-            } else {
-                this.SNILS = SNILS;
-            }
-        }
+        this.SNILS = getFieldValue(SNILS,
+                Validatable::getFormattedSNILS, Validatable::isCorrectSNILS);
     }
 
     public void setPersonINN(String personINN) {
-        if (nonBlankString(personINN)) {
-            if (verifiable) {
-                personINN = Validation.getFormattedPersonINN(personINN);
-                if (Validation.isCorrectPersonINN(personINN)) {
-                    this.personINN = personINN;
-                }
-            } else {
-                this.personINN = personINN;
-            }
-        }
+        this.personINN = getFieldValue(personINN,
+                Validatable::getFormattedPersonINN, Validatable::isCorrectPersonINN);
     }
 
     public void setBirthDate(String birthDate) {
-        if (nonBlankString(birthDate)) {
-            if (verifiable) {
-                birthDate = Validation.getFormattedDate(birthDate);
-                if (Validation.isCorrectBirthDate(birthDate)) {
-                    this.birthDate = birthDate;
-                }
-            } else {
-                this.birthDate = birthDate;
-            }
-        }
+        this.birthDate = getFieldValue(birthDate,
+                Validatable::getFormattedDate, Validatable::isCorrectBirthDate);
     }
 
     public void setEmailAddress(String emailAddress) {
-        if (nonBlankString(emailAddress)) {
-            if (verifiable) {
-                emailAddress = Validation.getFormattedEmailAddress(emailAddress);
-                if (Validation.isCorrectEmailAddress(emailAddress)) {
-                    this.emailAddress = emailAddress;
-                }
-            } else {
-                this.emailAddress = emailAddress;
-            }
-        }
+        this.emailAddress = getFieldValue(emailAddress,
+                Validatable::getFormattedEmailAddress, Validatable::isCorrectEmailAddress);
     }
 
     public void setPersonPhone(String personPhone) {
-        if (nonBlankString(personPhone)) {
-            if (verifiable) {
-                personPhone = Validation.getFormattedPhone(personPhone);
-                if (Validation.isCorrectPhone(personPhone)) {
-                    this.personPhone = personPhone;
-                }
-            } else {
-                this.personPhone = personPhone;
-            }
-        }
+        this.personPhone = getFieldValue(personPhone,
+                Validatable::getFormattedPhone, Validatable::isCorrectPhone);
     }
 
     public void setTitle(String title) {
-        if (nonBlankString(title)) {
-            if (verifiable) {
-                title = Validation.getFormattedPersonTitle(title);
-                if (Validation.isCorrectPersonTitle(title)) {
-                    this.title = title;
-                }
-            } else {
-                this.title = title;
-            }
-        }
+        this.title = getFieldValue(title,
+                Validatable::getFormattedPersonTitle, Validatable::isCorrectPersonTitle);
     }
 
     public void setCitizenship(String citizenship) {
-        if (nonBlankString(citizenship)) {
-            if (verifiable) {
-                citizenship = Validation.getFormattedCitizenship(citizenship);
-                if (Validation.isCorrectCitizenship(citizenship)) {
-                    this.citizenship = citizenship;
-                }
-            } else {
-                this.citizenship = citizenship;
-            }
-        }
+        this.citizenship = getFieldValue(citizenship,
+                Validatable::getFormattedCitizenship, Validatable::isCorrectCitizenship);
     }
 
     public void setTypeEnum(TypeEnum typeEnum) {
@@ -579,67 +391,29 @@ public final class FormData {
     }
 
     public void setIssueDate(String issueDate) {
-        if (nonBlankString(issueDate)) {
-            if (verifiable) {
-                if (nonBlankString(birthDate)) {
-                    issueDate = Validation.getFormattedDate(issueDate);
-                    if (Validation.isCorrectIssueDate(issueDate, birthDate)) {
-                        this.issueDate = issueDate;
-                    }
-                }
-            } else {
-                this.issueDate = issueDate;
-            }
-        }
+        this.issueDate = getFieldValue(issueDate,
+                Validatable::getFormattedDate, date -> Validatable.isCorrectIssueDate(date, birthDate));
     }
 
     public void setDivision(String division) {
-        if (nonBlankString(division)) {
-            if (verifiable) {
-                this.division = Validation.getFormattedDivision(division);
-            } else {
-                this.division = division;
-            }
-        }
+        this.division = getFieldValue(division,
+                Validatable::getFormattedDivision, anyText -> true,
+                "");
     }
 
     public void setSeries(String series) {
-        if (nonBlankString(series)) {
-            if (verifiable) {
-                series = Validation.getFormattedSeries(series);
-                if (Validation.isCorrectSeries(series, typeEnum)) {
-                    this.series = series;
-                }
-            } else {
-                this.series = series;
-            }
-        }
+        this.series = getFieldValue(series,
+                Validatable::getFormattedSeries, s -> Validatable.isCorrectSeries(s, typeEnum));
     }
 
     public void setNumber(String number) {
-        if (nonBlankString(number)) {
-            if (verifiable) {
-                number = Validation.getFormattedNumber(number);
-                if (Validation.isCorrectNumber(number, typeEnum)) {
-                    this.number = number;
-                }
-            } else {
-                this.number = number;
-            }
-        }
+        this.number = getFieldValue(number,
+                Validatable::getFormattedNumber, n -> Validatable.isCorrectNumber(n, typeEnum));
     }
 
     public void setIssueId(String issueId) {
-        if (nonBlankString(issueId)) {
-            if (verifiable) {
-                issueId = Validation.getFormattedIssueId(issueId);
-                if (Validation.isCorrectIssueId(issueId, typeEnum)) {
-                    this.issueId = issueId;
-                }
-            } else {
-                this.issueId = issueId;
-            }
-        }
+        this.issueId = getFieldValue(issueId,
+                Validatable::getFormattedIssueId, id -> Validatable.isCorrectIssueId(id, typeEnum));
     }
 
     public boolean isVerifiable() {
@@ -826,6 +600,54 @@ public final class FormData {
         return issueId;
     }
 
+    public @NotNull FormData clone(boolean verifiable) {
+        FormData clone = new FormData(entrepreneurshipEnum, verifiable);
+
+        clone.product = product;
+
+        clone.commonName = commonName;
+        clone.department = department;
+        clone.KPP = KPP;
+        clone.orgINN = orgINN;
+        clone.OGRN = OGRN;
+        clone.OGRNIP = OGRNIP;
+        clone.orgPhone = orgPhone;
+        clone.index = index;
+        clone.countryName = countryName;
+        clone.stateOrProvinceNameLaw = stateOrProvinceNameLaw;
+        clone.localityNameLaw = localityNameLaw;
+        clone.streetAddressLaw = streetAddressLaw;
+        clone.stateOrProvinceName = stateOrProvinceName;
+        clone.localityName = localityName;
+        clone.streetAddress = streetAddress;
+        clone.headLastName = headLastName;
+        clone.headFirstName = headFirstName;
+        clone.headMiddleName = headMiddleName;
+        clone.headPersonINN = headPersonINN;
+        clone.headTitle = headTitle;
+
+        clone.identificationKindEnum = identificationKindEnum;
+        clone.lastName = lastName;
+        clone.firstName = firstName;
+        clone.middleName = middleName;
+        clone.genderEnum = genderEnum;
+        clone.SNILS = SNILS;
+        clone.personINN = personINN;
+        clone.birthDate = birthDate;
+        clone.emailAddress = emailAddress;
+        clone.personPhone = personPhone;
+        clone.title = title;
+        clone.typeEnum = typeEnum;
+        clone.citizenship = citizenship;
+        clone.issueDate = issueDate;
+        clone.division = division;
+        clone.series = series;
+        clone.number = number;
+        clone.issueId = issueId;
+
+        return clone;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -918,8 +740,7 @@ public final class FormData {
                 series,
                 number,
                 issueId);
-        result = 31 * result + Arrays.hashCode(product);
-        return result;
+        return 31 * result + Arrays.hashCode(product);
     }
 
     @Override
@@ -993,63 +814,14 @@ public final class FormData {
             FormData data = new Gson().fromJson(internalObject, FormData.class);
             data.setRequestID(ID);
             data.setStatusEnum(statusID);
-            data.setTypeEnum(Objects.equals(Validation.getFormattedSeries(data.getSeries()), TypeEnum.FID_DOC_SERIES)
-                    && Objects.equals(Validation.getFormattedNumber(data.getNumber()), TypeEnum.FID_DOC_NUMBER)
-                    && Objects.equals(Validation.getFormattedIssueId(data.getIssueId()), TypeEnum.FID_DOC_ISSUE_ID) ?
-                    TypeEnum.FID_DOC
-                    : TypeEnum.RF_PASSPORT);
+            data.setTypeEnum(Objects.equals(Validatable.getFormattedSeries(data.getSeries()), TypeEnum.FID_DOC_SERIES)
+                    && Objects.equals(Validatable.getFormattedNumber(data.getNumber()), TypeEnum.FID_DOC_NUMBER)
+                    && Objects.equals(Validatable.getFormattedIssueId(data.getIssueId()), TypeEnum.FID_DOC_ISSUE_ID)
+                    ? TypeEnum.FID_DOC : TypeEnum.RF_PASSPORT);
             data.setCitizenship(data.getTypeEnum() == TypeEnum.RF_PASSPORT ? TypeEnum.CITIZENSHIP_RF : null);
             return data;
         } else {
             throw new BadRequestException(request.getResponse());
         }
-    }
-
-    public static @NotNull FormData copy(@NotNull FormData data) {
-        FormData copied = new FormData(data.getEntrepreneurshipEnum(), false);
-
-        copied.setProduct(data.getProduct());
-
-        copied.setCommonName(data.getCommonName());
-        copied.setDepartment(data.getDepartment());
-        copied.setKPP(data.getKPP());
-        copied.setOrgINN(data.getOrgINN());
-        copied.setOGRN(data.getOGRN());
-        copied.setOGRNIP(data.getOGRNIP());
-        copied.setOrgPhone(data.getOrgPhone());
-        copied.setIndex(data.getIndex());
-        copied.setCountryName(data.getCountryName());
-        copied.setStateOrProvinceNameLaw(data.getStateOrProvinceNameLaw());
-        copied.setLocalityNameLaw(data.getLocalityNameLaw());
-        copied.setStreetAddressLaw(data.getStreetAddressLaw());
-        copied.setStateOrProvinceName(data.getStateOrProvinceName());
-        copied.setLocalityName(data.getLocalityName());
-        copied.setStreetAddress(data.getStreetAddress());
-        copied.setHeadLastName(data.getHeadLastName());
-        copied.setHeadFirstName(data.getHeadFirstName());
-        copied.setHeadMiddleName(data.getHeadMiddleName());
-        copied.setHeadPersonINN(data.getHeadPersonINN());
-        copied.setHeadTitle(data.getHeadTitle());
-
-        copied.setIdentificationKindEnum(data.getIdentificationKindEnum());
-        copied.setLastName(data.getLastName());
-        copied.setFirstName(data.getFirstName());
-        copied.setMiddleName(data.getMiddleName());
-        copied.setGenderEnum(data.getGenderEnum());
-        copied.setSNILS(data.getSNILS());
-        copied.setPersonINN(data.getPersonINN());
-        copied.setBirthDate(data.getBirthDate());
-        copied.setEmailAddress(data.getEmailAddress());
-        copied.setPersonPhone(data.getPersonPhone());
-        copied.setTitle(data.getTitle());
-        copied.setTypeEnum(data.getTypeEnum());
-        copied.setCitizenship(data.getCitizenship());
-        copied.setIssueDate(data.getIssueDate());
-        copied.setDivision(data.getDivision());
-        copied.setSeries(data.getSeries());
-        copied.setNumber(data.getNumber());
-        copied.setIssueId(data.getIssueId());
-
-        return copied;
     }
 }

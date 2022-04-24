@@ -1,8 +1,6 @@
 package backend.exception;
 
-import java.io.IOException;
-
-public final class BadRequestException extends IOException {
+public final class BadRequestException extends RuntimeException {
 
     public BadRequestException() {
         super();

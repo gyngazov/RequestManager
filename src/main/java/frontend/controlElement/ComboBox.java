@@ -1,7 +1,7 @@
 package frontend.controlElement;
 
 import backend.window.main.filter.constant.StatusEnum;
-import backend.window.main.form.Regions;
+import backend.window.main.form.Region;
 import backend.window.main.form.constant.EntrepreneurshipEnum;
 import backend.window.main.form.constant.GenderEnum;
 import backend.window.main.form.constant.IdentificationKindEnum;
@@ -10,10 +10,10 @@ import backend.window.main.form.constant.TypeEnum;
 import javax.swing.*;
 
 import static backend.window.main.filter.constant.StatusEnum.WITHOUT_STATUS;
-import static backend.window.main.form.constant.EntrepreneurshipEnum.SOLE_PROPRIETOR;
+import static backend.window.main.form.constant.EntrepreneurshipEnum.JURIDICAL_PERSON;
 import static backend.window.main.form.constant.GenderEnum.M;
 import static backend.window.main.form.constant.IdentificationKindEnum.PERSONALLY;
-import static backend.window.main.form.constant.TypeEnum.FID_DOC;
+import static backend.window.main.form.constant.TypeEnum.RF_PASSPORT;
 
 public class ComboBox<E> extends JComboBox<E> {
 
@@ -21,14 +21,14 @@ public class ComboBox<E> extends JComboBox<E> {
 
         public Entrepreneurship() {
             super(EntrepreneurshipEnum.values());
-            setSelectedItem(SOLE_PROPRIETOR);
+            setSelectedItem(JURIDICAL_PERSON);
         }
     }
 
     public static final class StateOrProvinceName extends ComboBox<String> {
 
         public StateOrProvinceName() {
-            super(Regions.getSortedListOfRegions());
+            super(Region.getInstance().getSortedListOfRegions());
             setSelectedItem("Москва");
         }
     }
@@ -53,7 +53,7 @@ public class ComboBox<E> extends JComboBox<E> {
 
         public Type() {
             super(TypeEnum.values());
-            setSelectedItem(FID_DOC);
+            setSelectedItem(RF_PASSPORT);
         }
     }
 

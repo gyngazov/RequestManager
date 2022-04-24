@@ -7,31 +7,26 @@ import backend.iEcp.POSTRequest;
 import backend.window.main.form.FormData;
 import backend.window.main.form.constant.EntrepreneurshipEnum;
 import backend.window.main.form.constant.TypeEnum;
-import backend.window.settings.Options;
+import backend.window.settings.SoftwareConfiguration;
 import com.google.gson.GsonBuilder;
 import frontend.controlElement.Label;
 import frontend.controlElement.TextField;
-import frontend.window.main.MainForm;
 import frontend.window.optionDialog.InputPanel;
 import frontend.window.optionDialog.MessageDialog;
 import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.PlainDocument;
-import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.*;
 
-public final class ExportDataIEcp extends DataManipulation {
+public final class ExportDataIEcp extends DataConverter implements ActionListener {
     private final TextField requestIDTextField;
 
-    public ExportDataIEcp(MainForm mainForm, TextField requestIDTextField) {
-        super(mainForm);
-
+    public ExportDataIEcp(TextField requestIDTextField) {
         this.requestIDTextField = requestIDTextField;
     }
 
@@ -60,65 +55,10 @@ public final class ExportDataIEcp extends DataManipulation {
                 options, options[1]);
     }
 
-    private void showNotification(@NotNull Map<Integer, String> badRequestIDMap, int requestIDCount) {
-        int badRequestIDCount = badRequestIDMap.size();
-
-        if (badRequestIDCount == requestIDCount || badRequestIDCount != 0) {
-            PlainDocument plainDocument = new PlainDocument();
-            try {
-                for (Map.Entry<Integer, String> entry : badRequestIDMap.entrySet()) {
-                    StringBuilder stringBuilder = new StringBuilder(32);
-                    stringBuilder.append(entry.getKey());
-                    stringBuilder.append(": ");
-                    stringBuilder.append(entry.getValue());
-                    stringBuilder.append(System.lineSeparator());
-                    try {
-                        plainDocument.insertString(plainDocument.getLength(), stringBuilder.toString(), null);
-                    } catch (BadLocationException ignored) {
-                    }
-                }
-                if (plainDocument.getLength() == 0) {
-                    plainDocument.insertString(0,
-                            "Ошибка при выполнении операции, повторите попытку."
-                                    + System.lineSeparator(),
-                            null);
-                }
-                plainDocument.replace(plainDocument.getLength() - System.lineSeparator().length(),
-                        System.lineSeparator().length(), null, null);
-            } catch (BadLocationException ignored) {
-            }
-
-            JTextArea textArea = new JTextArea(plainDocument, null, Math.min(badRequestIDCount, 10), 0);
-            textArea.setEditable(false);
-            textArea.setMargin(new Insets(0, 4, 0, 4));
-            new MessageDialog.Warning(new JComponent[]{
-                    new Label("<html><body>Успешно изменено заявок: "
-                            + (requestIDCount - badRequestIDCount)
-                            + " из "
-                            + requestIDCount + ".<br>Не удалось внести изменения в следующие заявки:</body></html>"),
-                    new JScrollPane(textArea)});
-        } else {
-            new MessageDialog.Info("Запрос успешно обработан!");
-        }
-    }
-
-    private void showNotification(int badRequestIDCount, int requestIDCount) {
-        if (badRequestIDCount == requestIDCount) {
-            new MessageDialog.Error("Ошибка при выполнении операции, повторите попытку.");
-        } else if (badRequestIDCount == 0) {
-            new MessageDialog.Info("Запрос успешно обработан!");
-        } else {
-            new MessageDialog.Warning("Успешно создано заявок: "
-                    + (requestIDCount - badRequestIDCount)
-                    + " из "
-                    + requestIDCount + ".");
-        }
-    }
-
     private void sendChangeRequestID(FormData data, @NotNull String requestIDString) {
         int[] requestIDs = Arrays.stream(requestIDString.split("[^\\d]+"))
                 .mapToInt(Integer::parseInt)
-                .filter(requestID -> requestID >= DataManipulation.MIN_REQUEST_ID)
+                .filter(requestID -> requestID >= POSTRequest.MIN_REQUEST_ID)
                 .distinct()
                 .toArray();
         Map<Integer, String> badRequestIDMap = new TreeMap<>();
@@ -126,7 +66,7 @@ public final class ExportDataIEcp extends DataManipulation {
         for (int requestID : requestIDs) {
             try {
                 String JSON = generateJSONChange(data, requestID);
-                if (Options.read().isVerifiedOrgInn()) {
+                if (SoftwareConfiguration.getInstance().isVerifiedOrgInn()) {
                     FormData dataValidation = FormData.generateOnRequestID(requestID);
                     if (!Objects.equals(dataValidation.getOrgINN(), data.getOrgINN())) {
                         badRequestIDMap.put(requestID, "Заявка принадлежит другому юридическому лицу.");
@@ -149,7 +89,7 @@ public final class ExportDataIEcp extends DataManipulation {
             }
         }
 
-        showNotification(badRequestIDMap, requestIDs.length);
+        new Notification<Integer>(requestIDs.length).showNotificationDisplay(badRequestIDMap);
     }
 
     private void sendCreateRequestID(FormData data) {
@@ -172,7 +112,7 @@ public final class ExportDataIEcp extends DataManipulation {
                         }
                     }
 
-                    showNotification(badRequestIDCount, requestIDCount);
+                    new Notification<Integer>(requestIDCount).showNotificationDisplay(badRequestIDCount);
                     break;
                 } catch (NumberFormatException exception) {
                     new MessageDialog.Error("Ошибка ввода данных, повторите ввод.");
@@ -189,22 +129,21 @@ public final class ExportDataIEcp extends DataManipulation {
         if (data == null) {
             new MessageDialog.Error("В карточке организации укажите её форму и повторите попытку.");
         } else {
-            if (data.getTypeEnum() == TypeEnum.FID_DOC) {
-                data.setSeries(TypeEnum.FID_DOC_SERIES);
-                data.setNumber(TypeEnum.FID_DOC_NUMBER);
-                data.setIssueId(TypeEnum.FID_DOC_ISSUE_ID);
+            FormData clone = data.clone(false);
+            if (clone.getEntrepreneurshipEnum() != EntrepreneurshipEnum.JURIDICAL_PERSON) {
+                clone.setOrgINN(data.getPersonINN());
             }
-
-            FormData copied = FormData.copy(data);
-            if (copied.getEntrepreneurshipEnum() != EntrepreneurshipEnum.JURIDICAL_PERSON) {
-                copied.setOrgINN(data.getPersonINN());
+            if (clone.getTypeEnum() == TypeEnum.FID_DOC) {
+                clone.setSeries(TypeEnum.FID_DOC_SERIES);
+                clone.setNumber(TypeEnum.FID_DOC_NUMBER);
+                clone.setIssueId(TypeEnum.FID_DOC_ISSUE_ID);
             }
 
             String requestIDString = requestIDTextField.getText();
             if (requestIDString != null && !requestIDString.isBlank()) {
-                sendChangeRequestID(copied, requestIDString);
+                sendChangeRequestID(clone, requestIDString);
             } else {
-                sendCreateRequestID(copied);
+                sendCreateRequestID(clone);
             }
         }
     }

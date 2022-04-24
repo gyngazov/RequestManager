@@ -1,7 +1,7 @@
 package frontend.window.main;
 
 import backend.util.Constants;
-import backend.util.Validation;
+import backend.util.Validatable;
 import backend.window.main.form.constant.EntrepreneurshipEnum;
 import backend.window.main.form.constant.TypeEnum;
 import backend.window.main.form.listener.EntrepreneurshipListener;
@@ -13,14 +13,14 @@ import frontend.controlElement.CheckBox;
 import frontend.controlElement.ComboBox;
 import frontend.controlElement.Label;
 import frontend.controlElement.TextField;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 
-import static backend.window.main.form.constant.EntrepreneurshipEnum.JURIDICAL_PERSON;
-import static backend.window.main.form.constant.TypeEnum.RF_PASSPORT;
-
 public class MainForm extends JPanel {
+    private static MainForm mainForm;
+
     private final Label identificationKindLabel = new Label("Способ идентификации");
     private final Label lastNameLabel = new Label("Фамилия");
     private final Label firstNameLabel = new Label("Имя");
@@ -60,27 +60,27 @@ public class MainForm extends JPanel {
     private final Label headApplicantLabel = new Label("Он же заявитель");
 
     private final ComboBox<IdentificationKindEnum> identificationKindComboBox = new ComboBox.IdentificationKind();
-    private final TextField lastNameTextField = new TextField(Validation::isCorrectPersonLastName);
-    private final TextField firstNameTextField = new TextField(Validation::isCorrectPersonFirstName);
-    private final TextField middleNameTextField = new TextField(Validation::isCorrectPersonMiddleName);
+    private final TextField lastNameTextField = new TextField(Validatable::isCorrectPersonLastName);
+    private final TextField firstNameTextField = new TextField(Validatable::isCorrectPersonFirstName);
+    private final TextField middleNameTextField = new TextField(Validatable::isCorrectPersonMiddleName);
     private final ComboBox<GenderEnum> genderComboBox = new ComboBox.Gender();
-    private final TextField SNILSTextField = new TextField(Validation::isCorrectSNILS);
-    private final TextField personINNTextField = new TextField(Validation::isCorrectPersonINN);
-    private final TextField birthDateTextField = new TextField(Validation::isCorrectBirthDate);
-    private final TextField emailAddressTextField = new TextField(Validation::isCorrectEmailAddress);
-    private final TextField personPhoneTextField = new TextField(Validation::isCorrectPhone);
-    private final TextField titleTextField = new TextField(Validation::isCorrectPersonTitle);
+    private final TextField SNILSTextField = new TextField(Validatable::isCorrectSNILS);
+    private final TextField personINNTextField = new TextField(Validatable::isCorrectPersonINN);
+    private final TextField birthDateTextField = new TextField(Validatable::isCorrectBirthDate);
+    private final TextField emailAddressTextField = new TextField(Validatable::isCorrectEmailAddress);
+    private final TextField personPhoneTextField = new TextField(Validatable::isCorrectPhone);
+    private final TextField titleTextField = new TextField(Validatable::isCorrectPersonTitle);
     private final ComboBox<TypeEnum> typeComboBox = new ComboBox.Type();
-    private final TextField citizenshipTextField = new TextField(Validation::isCorrectCitizenship);
-    private final TextField issueDateTextField = new TextField(text -> Validation.isCorrectIssueDate(text, birthDateTextField.getText()));
+    private final TextField citizenshipTextField = new TextField(Validatable::isCorrectCitizenship);
+    private final TextField issueDateTextField = new TextField(text -> Validatable.isCorrectIssueDate(text, birthDateTextField.getText()));
     private final TextField divisionTextField = new TextField.Division();
-    private final TextField seriesTextField = new TextField(text -> Validation.isCorrectSeries(text, (TypeEnum) typeComboBox.getSelectedItem()));
-    private final TextField numberTextField = new TextField(text -> Validation.isCorrectNumber(text, (TypeEnum) typeComboBox.getSelectedItem()));
-    private final TextField issueIdTextField = new TextField(text -> Validation.isCorrectIssueId(text, (TypeEnum) typeComboBox.getSelectedItem()));
+    private final TextField seriesTextField = new TextField(text -> Validatable.isCorrectSeries(text, (TypeEnum) typeComboBox.getSelectedItem()));
+    private final TextField numberTextField = new TextField(text -> Validatable.isCorrectNumber(text, (TypeEnum) typeComboBox.getSelectedItem()));
+    private final TextField issueIdTextField = new TextField(text -> Validatable.isCorrectIssueId(text, (TypeEnum) typeComboBox.getSelectedItem()));
 
     private final ComboBox<EntrepreneurshipEnum> entrepreneurshipComboBox = new ComboBox.Entrepreneurship();
-    private final TextField commonNameTextField = new TextField(Validation::isCorrectOrganizationName);
-    private final TextField departmentTextField = new TextField(Validation::isCorrectOrganizationName) {
+    private final TextField commonNameTextField = new TextField(Validatable::isCorrectOrganizationName);
+    private final TextField departmentTextField = new TextField(Validatable::isCorrectOrganizationName) {
 
         private void setText(int length) {
             if (length == 0) {
@@ -108,41 +108,33 @@ public class MainForm extends JPanel {
             super.removeUpdate(e);
         }
     };
-    private final TextField KPPTextField = new TextField(Validation::isCorrectKPP);
-    private final TextField orgINNTextField = new TextField(Validation::isCorrectOrgINN);
-    private final TextField OGRNTextField = new TextField(Validation::isCorrectOGRN);
-    private final TextField orgPhoneTextField = new TextField(Validation::isCorrectPhone);
-    private final TextField indexTextField = new TextField(Validation::isCorrectIndex);
+    private final TextField KPPTextField = new TextField(Validatable::isCorrectKPP);
+    private final TextField orgINNTextField = new TextField(Validatable::isCorrectOrgINN);
+    private final TextField OGRNTextField = new TextField(Validatable::isCorrectOGRN);
+    private final TextField orgPhoneTextField = new TextField(Validatable::isCorrectPhone);
+    private final TextField indexTextField = new TextField(Validatable::isCorrectIndex);
     private final TextField countryNameTextField = new TextField.CountryName();
     private final ComboBox<String> stateOrProvinceNameComboBox = new ComboBox.StateOrProvinceName();
     private final TextField localityNameTextField = new TextField();
     private final TextField streetAddressTextField = new TextField();
-    private final TextField headLastNameTextField = new TextField(Validation::isCorrectPersonLastName);
-    private final TextField headFirstNameTextField = new TextField(Validation::isCorrectPersonFirstName);
-    private final TextField headMiddleNameTextField = new TextField(Validation::isCorrectPersonMiddleName);
-    private final TextField headPersonINNTextField = new TextField(Validation::isCorrectPersonINN);
-    private final TextField headTitleTextField = new TextField(Validation::isCorrectPersonTitle);
+    private final TextField headLastNameTextField = new TextField(Validatable::isCorrectPersonLastName);
+    private final TextField headFirstNameTextField = new TextField(Validatable::isCorrectPersonFirstName);
+    private final TextField headMiddleNameTextField = new TextField(Validatable::isCorrectPersonMiddleName);
+    private final TextField headPersonINNTextField = new TextField(Validatable::isCorrectPersonINN);
+    private final TextField headTitleTextField = new TextField(Validatable::isCorrectPersonTitle);
     private final CheckBox headApplicantCheckBox = new CheckBox("Да", false);
 
-    public MainForm() {
-        final JPanel organization = new JPanel();
-        final JPanel applicant = new JPanel();
-
-        setOrganizationLayout(organization);
-        setApplicantLayout(applicant);
-
-        setPanelBorder(organization, "КАРТОЧКА ОРГАНИЗАЦИИ");
-        setPanelBorder(applicant, "ПЕРСОНАЛЬНЫЕ ДАННЫЕ ЗАЯВИТЕЛЯ");
-
-        setMainFormLayout(organization, applicant);
-
+    private MainForm() {
+        setLayout();
         setListener();
-        setDefaults();
     }
 
-    private void setOrganizationLayout(final JPanel organization) {
-        GroupLayout layout = new GroupLayout(organization);
-        organization.setLayout(layout);
+    private @NotNull JPanel createOrganizationCard() {
+        JPanel organizationCard = new JPanel();
+        organizationCard.setBorder(Constants.createDefaultTitledBorder("КАРТОЧКА ОРГАНИЗАЦИИ"));
+
+        GroupLayout layout = new GroupLayout(organizationCard);
+        organizationCard.setLayout(layout);
 
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
@@ -247,11 +239,16 @@ public class MainForm extends JPanel {
                         .addComponent(headPersonINNTextField, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT)
                         .addComponent(headTitleTextField, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT)
                         .addComponent(headApplicantCheckBox, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT)));
+
+        return organizationCard;
     }
 
-    private void setApplicantLayout(final JPanel applicant) {
-        GroupLayout layout = new GroupLayout(applicant);
-        applicant.setLayout(layout);
+    private @NotNull JPanel createApplicantDataForm() {
+        JPanel applicantDataForm = new JPanel();
+        applicantDataForm.setBorder(Constants.createDefaultTitledBorder("ПЕРСОНАЛЬНЫЕ ДАННЫЕ ЗАЯВИТЕЛЯ"));
+
+        GroupLayout layout = new GroupLayout(applicantDataForm);
+        applicantDataForm.setLayout(layout);
 
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
@@ -353,37 +350,20 @@ public class MainForm extends JPanel {
                         .addComponent(seriesTextField, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT)
                         .addComponent(numberTextField, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT)
                         .addComponent(issueIdTextField, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT, Constants.TEXT_FIELD_HEIGHT)));
+
+        return applicantDataForm;
     }
 
-    private void setMainFormLayout(final JPanel organization, final JPanel applicant) {
-        GroupLayout layout = new GroupLayout(this);
-        this.setLayout(layout);
-
-        layout.setAutoCreateGaps(false);
-        layout.setAutoCreateContainerGaps(false);
-
-        layout.setHorizontalGroup(layout.createSequentialGroup()
-                .addComponent(organization)
-                .addComponent(applicant));
-
-        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                .addComponent(organization)
-                .addComponent(applicant));
-    }
-
-    private void setPanelBorder(final JPanel jPanel, final String value) {
-        jPanel.setBorder(Constants.createDefaultTitledBorder(value));
+    private void setLayout() {
+        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        add(createOrganizationCard());
+        add(createApplicantDataForm());
     }
 
     private void setListener() {
         typeComboBox.addItemListener(new TypeListener(this));
         headApplicantCheckBox.addItemListener(new HeadApplicantListener(this));
         entrepreneurshipComboBox.addItemListener(new EntrepreneurshipListener(this));
-    }
-
-    private void setDefaults() {
-        typeComboBox.setSelectedItem(RF_PASSPORT);
-        entrepreneurshipComboBox.setSelectedItem(JURIDICAL_PERSON);
     }
 
     public Label getOGRNLabel() {
@@ -532,5 +512,12 @@ public class MainForm extends JPanel {
 
     public CheckBox getHeadApplicantCheckBox() {
         return headApplicantCheckBox;
+    }
+
+    public static MainForm getInstance() {
+        if (mainForm == null) {
+            mainForm = new MainForm();
+        }
+        return mainForm;
     }
 }

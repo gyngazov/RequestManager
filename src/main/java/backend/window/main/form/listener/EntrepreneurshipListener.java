@@ -1,6 +1,6 @@
 package backend.window.main.form.listener;
 
-import backend.util.Validation;
+import backend.util.Validatable;
 import backend.window.main.form.constant.EntrepreneurshipEnum;
 import frontend.controlElement.ComboBox;
 import frontend.window.main.MainForm;
@@ -41,21 +41,21 @@ public record EntrepreneurshipListener(MainForm mainForm) implements ItemListene
                     switch ((EntrepreneurshipEnum) value) {
                         case JURIDICAL_PERSON -> {
                             setEnabledTextField(true);
-                            mainForm.getOGRNTextField().setPredicate(Validation::isCorrectOGRN);
+                            mainForm.getOGRNTextField().setPredicate(Validatable::isCorrectOGRN);
                             mainForm.getOGRNTextField().setEnabled(true);
                             mainForm.getOrgPhoneTextField().setEnabled(true);
                             mainForm.getOGRNLabel().setText("ОГРН");
                         }
                         case SOLE_PROPRIETOR -> {
                             setEnabledTextField(false);
-                            mainForm.getOGRNTextField().setPredicate(Validation::isCorrectOGRNIP);
+                            mainForm.getOGRNTextField().setPredicate(Validatable::isCorrectOGRNIP);
                             mainForm.getOGRNTextField().setEnabled(true);
                             mainForm.getOrgPhoneTextField().setEnabled(true);
                             mainForm.getOGRNLabel().setText("ОГРНИП");
                         }
                         case NATURAL_PERSON -> {
                             setEnabledTextField(false);
-                            mainForm.getOGRNTextField().setPredicate(Validation::isCorrectOGRN);
+                            mainForm.getOGRNTextField().setPredicate(Validatable::isCorrectOGRN);
                             mainForm.getOGRNTextField().setEnabled(false);
                             mainForm.getOrgPhoneTextField().setEnabled(false);
                             mainForm.getOGRNLabel().setText("ОГРН");

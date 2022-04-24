@@ -5,7 +5,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class RegionsTest {
+class RegionTest {
 
     @ParameterizedTest
     @CsvSource(value = {
@@ -123,6 +123,6 @@ class RegionsTest {
             "ЯРОСЛАВСКАЯ ОБЛАСТЬ,76"
     })
     void getRegionCode(String regionName, Integer expected) {
-        assertEquals(expected, Regions.getRegionCode(regionName));
+        assertEquals(expected, Region.getInstance().getRegionCode(regionName));
     }
 }

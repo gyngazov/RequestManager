@@ -4,23 +4,33 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 public final class TableModelIEcp extends AbstractTableModel {
     private ArrayList<? extends ArrayList<?>> data;
     private ArrayList<?> columnNames;
 
-    public TableModelIEcp(Object[][] data, Object[] columnNames) {
-        setDataArrayList(convertToArrayList(data), convertToArrayList(columnNames));
+    public TableModelIEcp(Object[][] data) {
+        setDataArrayList(convertToArrayList(data));
     }
 
-    public TableModelIEcp(ArrayList<? extends ArrayList<?>> data, ArrayList<?> columnNames) {
-        setDataArrayList(data, columnNames);
+    public TableModelIEcp(ArrayList<? extends ArrayList<?>> data) {
+        setDataArrayList(data);
     }
 
-    public void setDataArrayList(ArrayList<? extends ArrayList<?>> data, ArrayList<?> columnNames) {
+    public void setDataArrayList(ArrayList<? extends ArrayList<?>> data) {
         this.data = nonNullArrayList(data);
-        this.columnNames = nonNullArrayList(columnNames);
+        this.columnNames = new ArrayList<>(
+                Arrays.asList(
+                        "№ заявки",
+                        "Наименование организации",
+                        "ИНН организации",
+                        "Фамилия заявителя",
+                        "СНИЛС заявителя",
+                        "Дата создания заявки",
+                        "Статус заявки",
+                        "Комментарий"));
         fireTableStructureChanged();
     }
 

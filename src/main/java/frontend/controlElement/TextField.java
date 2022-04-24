@@ -15,8 +15,6 @@ public class TextField extends JTextField implements DocumentListener {
     public static final class CountryName extends TextField {
 
         public CountryName() {
-            super();
-
             setEditable(false);
             setText("Россия");
         }
@@ -25,15 +23,11 @@ public class TextField extends JTextField implements DocumentListener {
     public static final class Division extends TextField {
 
         public Division() {
-            super();
-
             setEnabled(false);
         }
     }
 
     public TextField(Predicate<String> predicate) {
-        super();
-
         this.predicate = predicate;
 
         getDocument().addDocumentListener(this);

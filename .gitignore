@@ -32,16 +32,9 @@ target/
 Thumbs.db
 
 # Temporary files
-backend_old/
-egrip/
-egrjul/
+/src/main/java/backend_old/
+/src/test/resources/*
+/src/test/*.*
 AttachRequestIEcp.java
 PreservationImportDocumentIEcp.java
 ValidationCheck.java
-Icon.psd
-Icon_pressed.psd
-Database.xlsx
-Layout.xlsx
-JSON.jpg
-Check.txt
-Data.txt

@@ -3,14 +3,15 @@ package backend.window.main.filter.listener;
 import backend.exception.BadRequestException;
 import backend.iEcp.JSON.JSONFilter;
 import backend.iEcp.POSTRequest;
-import backend.window.main.bar.listener.DataManipulation;
+import backend.window.main.bar.listener.DataConverter;
 import backend.window.main.filter.FilterData;
 import backend.window.main.filter.TableModelIEcp;
 import backend.window.main.filter.constant.StatusEnum;
 import backend.window.main.form.FormData;
 import com.google.gson.*;
+import frontend.window.main.filter.Table;
 import org.jetbrains.annotations.NotNull;
-import frontend.window.main.filter.Options;
+import frontend.window.main.filter.FilterOptions;
 import frontend.window.optionDialog.MessageDialog;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -23,16 +24,16 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 
-public record ImportFilteredDataIEcp(@NotNull Options options) implements ActionListener {
+public record ImportFilteredDataIEcp(@NotNull FilterOptions filterOptions) implements ActionListener {
 
     private @NotNull FilterData getFilterData() {
         FilterData data = new FilterData();
-        data.setCommonName(options.getCommonNameTextField().getText());
-        data.setOrgINN(options.getOrgINNTextField().getText());
-        data.setLastName(options.getLastNameTextField().getText());
-        data.setSNILS(options.getSNILSTextField().getText());
-        data.setCreationDate(options.getCreationDateTextField().getText());
-        data.setStatusId((StatusEnum) Objects.requireNonNullElse(options.getStatusComboBox().getSelectedItem(), StatusEnum.WITHOUT_STATUS));
+        data.setCommonName(filterOptions.getCommonNameTextField().getText());
+        data.setOrgINN(filterOptions.getOrgINNTextField().getText());
+        data.setLastName(filterOptions.getLastNameTextField().getText());
+        data.setSNILS(filterOptions.getSNILSTextField().getText());
+        data.setCreationDate(filterOptions.getCreationDateTextField().getText());
+        data.setStatusId((StatusEnum) Objects.requireNonNullElse(filterOptions.getStatusComboBox().getSelectedItem(), StatusEnum.WITHOUT_STATUS));
         return data;
     }
 
@@ -61,13 +62,15 @@ public record ImportFilteredDataIEcp(@NotNull Options options) implements Action
                 FormData data = new Gson().fromJson(element, FormData.class);
                 tabularData.add(generateTableRow(data));
             }
+        } else {
+            throw new BadRequestException(request.getResponse());
         }
     }
 
     private void filterByRequestID(ArrayList<ArrayList<Object>> tabularData, @NotNull String requestIDString) throws IOException {
         int[] requestIDs = Arrays.stream(requestIDString.split("[^\\d]+"))
                 .mapToInt(Integer::parseInt)
-                .filter(requestID -> requestID >= DataManipulation.MIN_REQUEST_ID)
+                .filter(requestID -> requestID >= POSTRequest.MIN_REQUEST_ID)
                 .distinct()
                 .toArray();
         for (int ID : requestIDs) {
@@ -76,21 +79,18 @@ public record ImportFilteredDataIEcp(@NotNull Options options) implements Action
         }
     }
 
-    private void changeNumberOfFoundRequestId(@NotNull TableModelIEcp dataModel) {
-        options.getNumberOfFoundRequestIDLabel().setText(String.valueOf(dataModel.getRowCount()));
-    }
-
     private void setData(@NotNull ArrayList<ArrayList<Object>> tabularData) {
         tabularData.sort(Comparator.comparingInt(o -> (Integer) o.get(0)));
-        TableModelIEcp dataModel = options.getTable().getDataModel();
-        dataModel.setDataArrayList(tabularData, options.getTable().getColumnNames());
-        changeNumberOfFoundRequestId(dataModel);
+        TableModelIEcp dataModel = (TableModelIEcp) Table.getInstance().getModel();
+        dataModel.setDataArrayList(tabularData);
+
+        filterOptions.getFoundRequestIDLabel().setText(String.valueOf(dataModel.getRowCount()));
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            String requestIDString = options.getRequestIDTextField().getText();
+            String requestIDString = filterOptions.getRequestIDTextField().getText();
             ArrayList<ArrayList<Object>> tabularData = new ArrayList<>();
             if (requestIDString == null || requestIDString.isBlank()) {
                 filterByParameters(tabularData);

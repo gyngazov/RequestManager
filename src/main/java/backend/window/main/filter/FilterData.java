@@ -1,6 +1,6 @@
 package backend.window.main.filter;
 
-import backend.util.Validation;
+import backend.util.Validatable;
 import backend.window.main.filter.constant.StatusEnum;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
@@ -32,8 +32,8 @@ public final class FilterData {
 
     public void setOrgINN(String orgINN) {
         if (nonBlankString(orgINN)) {
-            orgINN = Validation.getFormattedOrgINN(orgINN);
-            if (Validation.isCorrectOrgINN(orgINN)) {
+            orgINN = Validatable.getFormattedOrgINN(orgINN);
+            if (Validatable.isCorrectOrgINN(orgINN)) {
                 this.orgINN = orgINN;
             }
         }
@@ -47,8 +47,8 @@ public final class FilterData {
 
     public void setSNILS(String SNILS) {
         if (nonBlankString(SNILS)) {
-            SNILS = Validation.getFormattedSNILS(SNILS);
-            if (Validation.isCorrectSNILS(SNILS)) {
+            SNILS = Validatable.getFormattedSNILS(SNILS);
+            if (Validatable.isCorrectSNILS(SNILS)) {
                 this.SNILS = SNILS;
             }
         }
@@ -56,7 +56,7 @@ public final class FilterData {
 
     public void setCreationDate(String creationDate) {
         if (nonBlankString(creationDate)) {
-            this.creationDate = Validation.getFormattedDate(creationDate);
+            this.creationDate = Validatable.getFormattedDate(creationDate);
         }
     }
 

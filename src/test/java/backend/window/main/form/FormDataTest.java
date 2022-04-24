@@ -229,7 +229,7 @@ class FormDataTest {
 
         data.setProduct(entrepreneurshipEnum);
 
-        assertEquals(data, FormData.copy(data));
+        assertEquals(data, data.clone(false));
     }
 
     @Test
@@ -267,7 +267,7 @@ class FormDataTest {
 
         data.setProduct(entrepreneurshipEnum);
 
-        assertEquals(data, FormData.copy(data));
+        assertEquals(data, data.clone(false));
     }
 
     @Test
@@ -300,7 +300,7 @@ class FormDataTest {
 
         data.setProduct(entrepreneurshipEnum);
 
-        assertEquals(data, FormData.copy(data));
+        assertEquals(data, data.clone(false));
     }
 
     @Test
@@ -333,7 +333,7 @@ class FormDataTest {
 
         data.setProduct(entrepreneurshipEnum);
 
-        assertEquals(data, FormData.copy(data));
+        assertEquals(data, data.clone(false));
     }
 
     @Test
@@ -361,6 +361,6 @@ class FormDataTest {
 
         data.setProduct(entrepreneurshipEnum);
 
-        assertEquals(data, FormData.copy(data));
+        assertEquals(data, data.clone(false));
     }
 }

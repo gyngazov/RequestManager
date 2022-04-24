@@ -1,20 +1,27 @@
 package frontend.window.main;
 
 import frontend.window.main.filter.Table;
-import frontend.window.main.filter.Options;
+import frontend.window.main.filter.FilterOptions;
 
 import java.awt.*;
 import javax.swing.*;
 
 public final class MainWindow extends JFrame {
-    private final Table table = new Table();
-    private final Options options = new Options(table);
-    private final MainForm mainForm = new MainForm();
-    private final ToolBar toolBar = new ToolBar(mainForm);
+    private static MainWindow mainWindow;
 
-    public MainWindow() {
+    private final JPanel mainForm;
+    private final JTable table;
+    private final JPanel filterOptions;
+    private final JToolBar toolBar;
+
+    private MainWindow() {
+        mainForm = MainForm.getInstance();
+        table = Table.getInstance();
+        filterOptions = FilterOptions.getInstance();
+        toolBar = ToolBar.getInstance();
+
         localizeFileChooser();
-        setJMenuBar(new MenuBar(table, mainForm));
+        setJMenuBar(MenuBar.getInstance());
         setLayout();
         buildFrame();
     }
@@ -64,12 +71,12 @@ public final class MainWindow extends JFrame {
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(mainForm)
-                        .addComponent(options))
+                        .addComponent(filterOptions))
                 .addComponent(scrollPaneTable));
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addComponent(mainForm)
-                        .addComponent(options))
+                        .addComponent(filterOptions))
                 .addComponent(scrollPaneTable));
 
         add(toolBar, BorderLayout.NORTH);
@@ -86,7 +93,14 @@ public final class MainWindow extends JFrame {
         setVisible(true);
     }
 
+    public static MainWindow getInstance() {
+        if (mainWindow == null) {
+            mainWindow = new MainWindow();
+        }
+        return mainWindow;
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(MainWindow::new);
+        SwingUtilities.invokeLater(MainWindow::getInstance);
     }
 }
