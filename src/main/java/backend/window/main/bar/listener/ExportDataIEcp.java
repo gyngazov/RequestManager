@@ -56,12 +56,13 @@ public final class ExportDataIEcp extends DataConverter implements ActionListene
     }
 
     private void sendChangeRequestID(FormData data, @NotNull String requestIDString) {
-        int[] requestIDs = Arrays.stream(requestIDString.split("[^\\d]+"))
+        int[] requestIDs = Arrays.stream(requestIDString.split("\\D+"))
                 .mapToInt(Integer::parseInt)
                 .filter(requestID -> requestID >= POSTRequest.MIN_REQUEST_ID)
                 .distinct()
                 .toArray();
-        Map<Integer, String> badRequestIDMap = new TreeMap<>();
+        Map<Integer, List<String>> badRequestIDMap = new TreeMap<>();
+        List<String> errorList = new ArrayList<>();
 
         for (int requestID : requestIDs) {
             try {
@@ -69,23 +70,26 @@ public final class ExportDataIEcp extends DataConverter implements ActionListene
                 if (SoftwareConfiguration.getInstance().isVerifiedOrgInn()) {
                     FormData dataValidation = FormData.generateOnRequestID(requestID);
                     if (!Objects.equals(dataValidation.getOrgINN(), data.getOrgINN())) {
-                        badRequestIDMap.put(requestID, "Заявка принадлежит другому юридическому лицу.");
+                        errorList.add("Заявка принадлежит другому юридическому лицу.");
+                        badRequestIDMap.put(requestID, errorList);
                         continue;
                     }
                 }
 
                 POSTRequest postRequest = new POSTRequest(POSTRequest.CHANGE_REQUEST, JSON);
                 if (postRequest.getResponseCode() != HttpsURLConnection.HTTP_OK) {
-                    badRequestIDMap.put(requestID, postRequest.getResponse());
+                    errorList.add(postRequest.getResponse());
+                    badRequestIDMap.put(requestID, errorList);
                 }
-            } catch (BadRequestException exception) {
-                badRequestIDMap.put(requestID, exception.getMessage());
             } catch (SocketTimeoutException exception) {
-                badRequestIDMap.put(requestID, "Время ожидания операции истекло.");
+                errorList.add("Время ожидания операции истекло.");
+                badRequestIDMap.put(requestID, errorList);
             } catch (IOException exception) {
-                badRequestIDMap.put(requestID, "Ошибка получения данных.");
+                errorList.add("Ошибка получения данных.");
+                badRequestIDMap.put(requestID, errorList);
             } catch (Exception exception) {
-                badRequestIDMap.put(requestID, exception.getMessage());
+                errorList.add(exception.getMessage());
+                badRequestIDMap.put(requestID, errorList);
             }
         }
 
@@ -132,6 +136,7 @@ public final class ExportDataIEcp extends DataConverter implements ActionListene
             FormData clone = data.clone(false);
             if (clone.getEntrepreneurshipEnum() != EntrepreneurshipEnum.JURIDICAL_PERSON) {
                 clone.setOrgINN(data.getPersonINN());
+                clone.setPersonINN(null);
             }
             if (clone.getTypeEnum() == TypeEnum.FID_DOC) {
                 clone.setSeries(TypeEnum.FID_DOC_SERIES);

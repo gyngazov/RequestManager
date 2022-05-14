@@ -35,6 +35,5 @@ Thumbs.db
 /src/main/java/backend_old/
 /src/test/resources/*
 /src/test/*.*
-AttachRequestIEcp.java
 PreservationImportDocumentIEcp.java
 ValidationCheck.java

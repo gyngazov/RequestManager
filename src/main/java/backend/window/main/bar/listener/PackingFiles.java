@@ -9,9 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -112,7 +110,8 @@ public final class PackingFiles implements ActionListener {
     }
 
     private void pack(File currentDirectory) {
-        Map<String, String> notificationMap = new TreeMap<>();
+        Map<String, List<String>> notificationMap = new TreeMap<>();
+        List<String> errorList = new ArrayList<>();
 
         File[] passports = getListFiles(currentDirectory, PASSPORT_CODE_NAME);
         File[] SNILS = getListFiles(currentDirectory, SNILS_CODE_NAME);
@@ -136,9 +135,11 @@ public final class PackingFiles implements ActionListener {
                 writeFile(zipOut, bufOut, photos[0], rename(photos[0], "Фото заявителя"));
             } catch (IOException e) {
                 if (archive.delete()) {
-                    notificationMap.put(archive.getName(), "Ошибка при записи файлов.");
+                    errorList.add("Ошибка при записи файлов.");
+                    notificationMap.put(archive.getName(), errorList);
                 } else {
-                    notificationMap.put(archive.getName(), "Ошибка при запаковке файлов.");
+                    errorList.add("Ошибка при запаковке файлов.");
+                    notificationMap.put(archive.getName(), errorList);
                 }
             }
         }

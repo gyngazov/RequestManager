@@ -10,10 +10,10 @@ import backend.window.main.form.constant.TypeEnum;
 import javax.swing.*;
 
 import static backend.window.main.filter.constant.StatusEnum.WITHOUT_STATUS;
-import static backend.window.main.form.constant.EntrepreneurshipEnum.JURIDICAL_PERSON;
+import static backend.window.main.form.constant.EntrepreneurshipEnum.NATURAL_PERSON;
 import static backend.window.main.form.constant.GenderEnum.M;
 import static backend.window.main.form.constant.IdentificationKindEnum.PERSONALLY;
-import static backend.window.main.form.constant.TypeEnum.RF_PASSPORT;
+import static backend.window.main.form.constant.TypeEnum.FID_DOC;
 
 public class ComboBox<E> extends JComboBox<E> {
 
@@ -21,7 +21,7 @@ public class ComboBox<E> extends JComboBox<E> {
 
         public Entrepreneurship() {
             super(EntrepreneurshipEnum.values());
-            setSelectedItem(JURIDICAL_PERSON);
+            setSelectedItem(NATURAL_PERSON);
         }
     }
 
@@ -53,7 +53,7 @@ public class ComboBox<E> extends JComboBox<E> {
 
         public Type() {
             super(TypeEnum.values());
-            setSelectedItem(RF_PASSPORT);
+            setSelectedItem(FID_DOC);
         }
     }
 

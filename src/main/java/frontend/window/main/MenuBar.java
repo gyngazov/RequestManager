@@ -2,6 +2,7 @@ package frontend.window.main;
 
 import backend.window.main.bar.listener.*;
 import backend.window.main.form.constant.DataTypeEnum;
+import frontend.window.optionDialog.AttachingRequest;
 import frontend.window.optionDialog.SoftwareConfigurationDialog;
 import frontend.window.optionDialog.About;
 
@@ -28,8 +29,8 @@ final class MenuBar extends JMenuBar {
     private final JMenuItem deletingData = new JMenuItem("Очистить всё");
 
     private final JMenuItem packingFiles = new JMenuItem("Запаковать документы...");
-    private final JMenuItem attachedFile = new JMenuItem("Прикрепить документы...");
-    private final JMenuItem attachedRequest = new JMenuItem("Прикрепить запрос...");
+    private final JMenuItem attachedFile = new JMenuItem("Документы...");
+    private final JMenuItem attachedRequest = new JMenuItem("Запрос...");
 
     private final JMenuItem importingDocument = new JMenuItem("Скачать документы...");
 
@@ -104,6 +105,7 @@ final class MenuBar extends JMenuBar {
 
         packingFiles.addActionListener(new PackingFiles());
         attachedFile.addActionListener(new ExportAttachedFileIEcp());
+        attachedRequest.addActionListener(e -> new AttachingRequest().buildFrame(MainWindow.getInstance()));
 
         about.addActionListener(e -> new About());
     }

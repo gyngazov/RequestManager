@@ -28,15 +28,15 @@ public class Table extends JTable {
 
         JMenuItem importApplication = new JMenuItem("Заявление");
         JMenuItem importProcuration = new JMenuItem("Доверенность");
-        JMenuItem importCertificate = new JMenuItem("Сертификат");
+        JMenuItem importCertificate = new JMenuItem("Сертификат...");
 
         JMenu download = new JMenu("Скачать");
         download.add(importApplication);
         download.add(importProcuration);
         download.add(importCertificate);
 
-        JMenuItem attachDocument = new JMenuItem("Документы заявителя");
-        JMenuItem attachRequest = new JMenuItem("Запрос");
+        JMenuItem attachDocument = new JMenuItem("Документы...");
+        JMenuItem attachRequest = new JMenuItem("Запрос...");
 
         JMenu send = new JMenu("Прикрепить");
         send.add(attachDocument);

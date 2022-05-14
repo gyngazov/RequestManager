@@ -18,6 +18,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 
+import static backend.window.main.form.constant.EntrepreneurshipEnum.JURIDICAL_PERSON;
+import static backend.window.main.form.constant.TypeEnum.RF_PASSPORT;
+
 public class MainForm extends JPanel {
     private static MainForm mainForm;
 
@@ -127,6 +130,7 @@ public class MainForm extends JPanel {
     private MainForm() {
         setLayout();
         setListener();
+        setDefaults();
     }
 
     private @NotNull JPanel createOrganizationCard() {
@@ -364,6 +368,11 @@ public class MainForm extends JPanel {
         typeComboBox.addItemListener(new TypeListener(this));
         headApplicantCheckBox.addItemListener(new HeadApplicantListener(this));
         entrepreneurshipComboBox.addItemListener(new EntrepreneurshipListener(this));
+    }
+
+    private void setDefaults() {
+        typeComboBox.setSelectedItem(RF_PASSPORT);
+        entrepreneurshipComboBox.setSelectedItem(JURIDICAL_PERSON);
     }
 
     public Label getOGRNLabel() {

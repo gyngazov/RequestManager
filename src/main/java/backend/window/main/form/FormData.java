@@ -806,14 +806,10 @@ public final class FormData {
         POSTRequest request = new POSTRequest(POSTRequest.VIEW_REQUEST, new Gson().toJson(new JSONView(requestID)));
         if (request.getResponseCode() == HttpsURLConnection.HTTP_OK) {
             JsonObject externalObject = JsonParser.parseString(request.getResponse()).getAsJsonObject();
-            Integer ID = externalObject.get("requestId").getAsInt();
-            Integer statusID = externalObject.get("statusId").getAsInt();
 
-            JsonObject internalObject = externalObject.getAsJsonObject("info");
-
-            FormData data = new Gson().fromJson(internalObject, FormData.class);
-            data.setRequestID(ID);
-            data.setStatusEnum(statusID);
+            FormData data = new Gson().fromJson(externalObject.getAsJsonObject("info"), FormData.class);
+            data.setRequestID(externalObject.get("requestId").getAsInt());
+            data.setStatusEnum(externalObject.get("statusId").getAsInt());
             data.setTypeEnum(Objects.equals(Validatable.getFormattedSeries(data.getSeries()), TypeEnum.FID_DOC_SERIES)
                     && Objects.equals(Validatable.getFormattedNumber(data.getNumber()), TypeEnum.FID_DOC_NUMBER)
                     && Objects.equals(Validatable.getFormattedIssueId(data.getIssueId()), TypeEnum.FID_DOC_ISSUE_ID)

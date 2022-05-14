@@ -8,19 +8,21 @@ import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
+import java.util.List;
 import java.util.Map;
 
-public record Notification<T>(int numberOfOperations) {
+public record Notification<K>(int numberOfOperations) {
 
-    private @NotNull PlainDocument createModel(@NotNull Map<T, String> notifications) {
+    private @NotNull PlainDocument createModel(@NotNull Map<K, List<String>> notificationMap) {
         PlainDocument plainDocument = new PlainDocument();
         try {
-            for (Map.Entry<T, String> entry : notifications.entrySet()) {
-                try {
-                    plainDocument.insertString(plainDocument.getLength(),
-                            entry.getKey() + ": " + entry.getValue() + System.lineSeparator(),
-                            null);
-                } catch (BadLocationException ignored) {}
+            for (Map.Entry<K, List<String>> entry : notificationMap.entrySet()) {
+                for (String value : entry.getValue()) {
+                    try {
+                        plainDocument.insertString(plainDocument.getLength(),
+                                entry.getKey() + ": " + value + System.lineSeparator(), null);
+                    } catch (BadLocationException ignored) {}
+                }
             }
             plainDocument.replace(plainDocument.getLength() - System.lineSeparator().length(),
                     System.lineSeparator().length(), null, null);
@@ -40,7 +42,7 @@ public record Notification<T>(int numberOfOperations) {
         }
     }
 
-    public void showNotificationDisplay(@NotNull Map<T, String> notificationMap) {
+    public void showNotificationDisplay(@NotNull Map<K, List<String>> notificationMap) {
         int notifications = notificationMap.size();
 
         if (notifications == numberOfOperations) {
@@ -48,7 +50,16 @@ public record Notification<T>(int numberOfOperations) {
         } else if (notifications == 0) {
             new MessageDialog.Info("Операция успешно завершена!");
         } else {
-            JTextArea textArea = new JTextArea(createModel(notificationMap), null, Math.min(notificationMap.size(), 10), 0);
+            int maxRow = 10, maxListSize = 0;
+            for (Map.Entry<K, List<String>> entry : notificationMap.entrySet()) {
+                int size = entry.getValue().size();
+                if (maxListSize < size) {
+                    maxListSize = size;
+                    if (maxListSize >= maxRow) break;
+                }
+            }
+
+            JTextArea textArea = new JTextArea(createModel(notificationMap), null, Math.min(maxListSize, maxRow), 0);
             textArea.setEditable(false);
             textArea.setMargin(new Insets(0, 4, 0, 4));
 

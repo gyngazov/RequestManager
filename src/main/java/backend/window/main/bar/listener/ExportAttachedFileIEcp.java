@@ -15,10 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.SocketTimeoutException;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public record ExportAttachedFileIEcp() implements ActionListener {
 
@@ -95,20 +92,25 @@ public record ExportAttachedFileIEcp() implements ActionListener {
             throw new Exception("Используя фильтр заявок в нижней части экрана,<br>выберите заявки для отправки документов и повторите попытку.");
         }
 
-        Map<Integer, String> notificationMap = new TreeMap<>();
+        Map<Integer, List<String>> notificationMap = new TreeMap<>();
+        List<String> errorList = new ArrayList<>();
 
         for (Integer requestID : requestIDs) {
             try {
                 sendPackageDocuments(currentDirectory, requestID, ".zip");
                 sendPackageDocuments(currentDirectory, requestID, ".zip.sig");
             } catch (FileNotFoundException | BadRequestException e) {
-                notificationMap.put(requestID, e.getMessage());
+                errorList.add(e.getMessage());
+                notificationMap.put(requestID, errorList);
             } catch (SocketTimeoutException exception) {
-                notificationMap.put(requestID, "Время ожидания операции истекло, попробуйте повторить запрос позже.");
+                errorList.add("Время ожидания операции истекло, попробуйте повторить запрос позже.");
+                notificationMap.put(requestID, errorList);
             } catch (IOException exception) {
-                notificationMap.put(requestID, "Ошибка получения данных, попробуйте повторить запрос позже.");
+                errorList.add("Ошибка получения данных, попробуйте повторить запрос позже.");
+                notificationMap.put(requestID, errorList);
             } catch (Exception exception) {
-                notificationMap.put(requestID, exception.getMessage());
+                errorList.add(exception.getMessage());
+                notificationMap.put(requestID, errorList);
             }
         }
 
