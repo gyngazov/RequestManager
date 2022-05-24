@@ -2,7 +2,8 @@ package frontend.window.main;
 
 import backend.window.main.bar.listener.*;
 import backend.window.main.form.constant.DataTypeEnum;
-import frontend.window.optionDialog.AttachingRequest;
+import frontend.window.optionDialog.SendRequestDialogBox;
+import frontend.window.optionDialog.DocumentSaveOptionsDialogBox;
 import frontend.window.optionDialog.SoftwareConfigurationDialog;
 import frontend.window.optionDialog.About;
 
@@ -105,7 +106,9 @@ final class MenuBar extends JMenuBar {
 
         packingFiles.addActionListener(new PackingFiles());
         attachedFile.addActionListener(new ExportAttachedFileIEcp());
-        attachedRequest.addActionListener(e -> new AttachingRequest().buildFrame(MainWindow.getInstance()));
+        attachedRequest.addActionListener(e -> new SendRequestDialogBox().buildFrame(MainWindow.getInstance()));
+
+        importingDocument.addActionListener(e -> new DocumentSaveOptionsDialogBox().buildFrame(MainWindow.getInstance()));
 
         about.addActionListener(e -> new About());
     }

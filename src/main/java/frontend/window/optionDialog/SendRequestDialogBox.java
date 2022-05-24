@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 
-public final class AttachingRequest extends JDialog {
+public final class SendRequestDialogBox extends JDialog {
 
     private static class ManualMode extends JPanel {
         private final TextField requestIDTextField = new TextField();
@@ -166,7 +166,7 @@ public final class AttachingRequest extends JDialog {
 
     }
 
-    public AttachingRequest() {
+    public SendRequestDialogBox() {
         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         tabbedPane.add("Автоматический режим", new AutoMode());
         tabbedPane.add("Ручной режим", new ManualMode());
