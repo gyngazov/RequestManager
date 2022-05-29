@@ -12,8 +12,6 @@ public final class JSONChange extends JSONMain {
     private final int requestID;
 
     public JSONChange(FormData info, int requestID) {
-        super();
-
         this.info = info;
         this.requestID = requestID;
     }

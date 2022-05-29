@@ -43,11 +43,14 @@ public record Notification<K>(int numberOfOperations) {
     }
 
     public void showNotificationDisplay(@NotNull Map<K, List<String>> notificationMap) {
-        int notifications = notificationMap.size();
+        int[] notifications = {0};
+        notificationMap.forEach((k, v) -> {
+            if (!v.isEmpty()) notifications[0] += 1;
+        });
 
-        if (notifications == numberOfOperations) {
+        if (notifications[0] == numberOfOperations) {
             new MessageDialog.Error("Ошибка при выполнении операции, повторите попытку.");
-        } else if (notifications == 0) {
+        } else if (notifications[0] == 0) {
             new MessageDialog.Info("Операция успешно завершена!");
         } else {
             int maxRow = 10, maxListSize = 0;
@@ -65,7 +68,7 @@ public record Notification<K>(int numberOfOperations) {
 
             new MessageDialog.Warning(new JComponent[]{
                     new Label("<html><body>Не удалось завершить операцию! Завершено "
-                            + (numberOfOperations - notifications) + " из " + numberOfOperations
+                            + (numberOfOperations - notifications[0]) + " из " + numberOfOperations
                             + ".<br>Необработанные элементы:</body></html>"),
                     new JScrollPane(textArea)});
         }

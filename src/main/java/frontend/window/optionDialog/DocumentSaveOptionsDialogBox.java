@@ -12,9 +12,8 @@ import java.awt.event.ItemEvent;
 
 public class DocumentSaveOptionsDialogBox extends JDialog {
     private final CheckBox[] documentType = {
-            new CheckBox("КСКПЭП", true),                                                   // 0
-            new CheckBox("КСКПЭП на бумажном носителе", true),                              // 1
-            new CheckBox("Руководство по обеспечению безопасности", false)                  // 2
+            new CheckBox("КСКПЭП (*.cer)", true),   // 0
+            new CheckBox("КСКПЭП (*.pdf)", true)    // 1
     };
     private final RadioButton[] saveType = {
             new RadioButton("Разложить файлы по папкам в соответствии с запросами", true),  // 0
@@ -52,7 +51,6 @@ public class DocumentSaveOptionsDialogBox extends JDialog {
                 .addComponent(whatSave)
                 .addComponent(documentType[0])
                 .addComponent(documentType[1])
-                .addComponent(documentType[2])
                 .addComponent(howSave)
                 .addComponent(saveType[0])
                 .addComponent(saveType[1]));
@@ -61,7 +59,6 @@ public class DocumentSaveOptionsDialogBox extends JDialog {
                 .addComponent(whatSave)
                 .addComponent(documentType[0])
                 .addComponent(documentType[1])
-                .addComponent(documentType[2])
                 .addComponent(howSave)
                 .addComponent(saveType[0])
                 .addComponent(saveType[1]));

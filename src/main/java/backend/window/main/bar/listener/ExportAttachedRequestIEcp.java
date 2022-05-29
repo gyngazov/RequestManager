@@ -56,52 +56,50 @@ public record ExportAttachedRequestIEcp() implements ActionListener {
                                  @Nullable Object data,
                                  @Nullable String filename,
                                  @Nullable Integer requestID,
-                                 @Nullable Map<Integer, List<String>> notificationMap) {
+                                 @Nullable List<String> errorList) {
         if (Objects.equals(request, data)) {
             return true;
-        } else {
-            if (requestID != null && notificationMap != null) {
-                List<String> errorList = Objects.requireNonNullElse(notificationMap.get(requestID), new ArrayList<>());
-                errorList.add(filename == null || filename.isBlank() ? "unnamed" : filename + ": \"" + request + "\" ≠ \"" + data + "\"");
-                notificationMap.put(requestID, errorList);
-            }
-            return false;
+        } else if (requestID != null && errorList != null) {
+            errorList.add(filename == null || filename.isBlank() ? "unnamed" : filename + ": \"" + request + "\" ≠ \"" + data + "\"");
         }
+
+        return false;
     }
 
     public boolean compareFields(@NotNull Request request,
                                  @NotNull FormData data,
                                  @Nullable Integer requestID,
-                                 @Nullable Map<Integer, List<String>> notificationMap) {
+                                 @Nullable List<String> errorList) {
         boolean result = false;
 
-        if (compareField(request.getEntrepreneurshipEnum(), data.getEntrepreneurshipEnum(), request.getFilename(), requestID, notificationMap)) {
+        if (compareField(request.getEntrepreneurshipEnum(), data.getEntrepreneurshipEnum(), request.getFilename(), requestID, errorList)) {
             switch (request.getEntrepreneurshipEnum()) {
-                case JURIDICAL_PERSON -> result = compareField(request.getCommonName(), data.getCommonName(), request.getFilename(), requestID, notificationMap)
-                                & compareField(request.getOrgINN(), data.getOrgINN(), request.getFilename(), requestID, notificationMap)
-                                & compareField(request.getStateOrProvinceName(), data.getStateOrProvinceNameLaw(), request.getFilename(), requestID, notificationMap)
-                                & compareField(request.getLocalityName(), data.getLocalityNameLaw(), request.getFilename(), requestID, notificationMap)
-                                & compareField(request.getStreetAddress(), data.getStreetAddressLaw(), request.getFilename(), requestID, notificationMap)
-                                & compareField(request.getPersonINN(), data.getPersonINN(), request.getFilename(), requestID, notificationMap);
+                case JURIDICAL_PERSON ->
+                        result = compareField(request.getCommonName(), data.getCommonName(), request.getFilename(), requestID, errorList)
+                                & compareField(request.getOrgINN(), data.getOrgINN(), request.getFilename(), requestID, errorList)
+                                & compareField(request.getStateOrProvinceName(), data.getStateOrProvinceNameLaw(), request.getFilename(), requestID, errorList)
+                                & compareField(request.getLocalityName(), data.getLocalityNameLaw(), request.getFilename(), requestID, errorList)
+                                & compareField(request.getStreetAddress(), data.getStreetAddressLaw(), request.getFilename(), requestID, errorList)
+                                & compareField(request.getPersonINN(), data.getPersonINN(), request.getFilename(), requestID, errorList);
                 case SOLE_PROPRIETOR, NATURAL_PERSON -> result = compareField(request.getCommonName(),
-                        (data.getLastName() + " " + data.getFirstName() + " " + data.getMiddleName()).strip(), request.getFilename(), requestID, notificationMap)
-                        & compareField(request.getOrgINN(), null, request.getFilename(), requestID, notificationMap)
-                        & compareField(request.getStateOrProvinceName(), data.getStateOrProvinceName(), request.getFilename(), requestID, notificationMap)
-                        & compareField(request.getLocalityName(), data.getLocalityName(), request.getFilename(), requestID, notificationMap)
-                        & compareField(request.getStreetAddress(), data.getStreetAddress(), request.getFilename(), requestID, notificationMap)
-                        & compareField(request.getPersonINN(), data.getOrgINN(), request.getFilename(), requestID, notificationMap);
+                        (data.getLastName() + " " + data.getFirstName() + " " + data.getMiddleName()).strip(), request.getFilename(), requestID, errorList)
+                        & compareField(request.getOrgINN(), null, request.getFilename(), requestID, errorList)
+                        & compareField(request.getStateOrProvinceName(), data.getStateOrProvinceName(), request.getFilename(), requestID, errorList)
+                        & compareField(request.getLocalityName(), data.getLocalityName(), request.getFilename(), requestID, errorList)
+                        & compareField(request.getStreetAddress(), data.getStreetAddress(), request.getFilename(), requestID, errorList)
+                        & compareField(request.getPersonINN(), data.getOrgINN(), request.getFilename(), requestID, errorList);
             }
 
-            result &= compareField(request.getOrganizationName(), data.getCommonName(), request.getFilename(), requestID, notificationMap)
-                    & compareField(request.getOrganizationalUnitName(), data.getDepartment(), request.getFilename(), requestID, notificationMap)
-                    & compareField(request.getOGRN(), data.getOGRN(), request.getFilename(), requestID, notificationMap)
-                    & compareField(request.getOGRNIP(), data.getOGRNIP(), request.getFilename(), requestID, notificationMap)
-                    & compareField(request.getIdentificationKind(), data.getIdentificationKindEnum().getCode(), request.getFilename(), requestID, notificationMap)
-                    & compareField(request.getLastName(), data.getLastName(), request.getFilename(), requestID, notificationMap)
-                    & compareField(request.getGivenName(), data.getFirstName() + " " + data.getMiddleName(), request.getFilename(), requestID, notificationMap)
-                    & compareField(request.getSNILS(), data.getSNILS(), request.getFilename(), requestID, notificationMap)
-                    & compareField(request.getEmailAddress(), data.getEmailAddress(), request.getFilename(), requestID, notificationMap)
-                    & compareField(request.getTitle(), data.getTitle(), request.getFilename(), requestID, notificationMap);
+            result &= compareField(request.getOrganizationName(), data.getCommonName(), request.getFilename(), requestID, errorList)
+                    & compareField(request.getOrganizationalUnitName(), data.getDepartment(), request.getFilename(), requestID, errorList)
+                    & compareField(request.getOGRN(), data.getOGRN(), request.getFilename(), requestID, errorList)
+                    & compareField(request.getOGRNIP(), data.getOGRNIP(), request.getFilename(), requestID, errorList)
+                    & compareField(request.getIdentificationKind(), data.getIdentificationKindEnum().getCode(), request.getFilename(), requestID, errorList)
+                    & compareField(request.getLastName(), data.getLastName(), request.getFilename(), requestID, errorList)
+                    & compareField(request.getGivenName(), data.getFirstName() + " " + data.getMiddleName(), request.getFilename(), requestID, errorList)
+                    & compareField(request.getSNILS(), data.getSNILS(), request.getFilename(), requestID, errorList)
+                    & compareField(request.getEmailAddress(), data.getEmailAddress(), request.getFilename(), requestID, errorList)
+                    & compareField(request.getTitle(), data.getTitle(), request.getFilename(), requestID, errorList);
         }
 
         return result;
@@ -120,24 +118,23 @@ public record ExportAttachedRequestIEcp() implements ActionListener {
 
                 if (publicKeyList.contains(request.getPublicKey())) {
                     errorList.add(requestFile.getName() + ": Неуникальный открытый ключ");
-                    notificationMap.put(requestIDs[i], errorList);
                 } else {
                     publicKeyList.add(request.getPublicKey());
 
-                    if (compareFields(request, data, requestIDs[i], notificationMap)) {
+                    if (compareFields(request, data, requestIDs[i], errorList)) {
                         String json = new Gson().toJson(new JSONAttachFile(requestFile.getName(),
                                 Base64.getMimeEncoder().encodeToString(request.getSrc()), 0, requestIDs[i]));
                         POSTRequest postRequest = new POSTRequest(POSTRequest.ATTACH_FILE, json);
                         if (postRequest.getResponseCode() != HttpsURLConnection.HTTP_OK) {
                             errorList.add(postRequest.getResponse());
-                            notificationMap.put(requestIDs[i], errorList);
                         }
                     }
                 }
             } catch (Exception e) {
                 errorList.add(requestFile.getName() + ": Ошибка получения данных");
-                notificationMap.put(requestIDs[i], errorList);
             }
+
+            notificationMap.put(requestIDs[i], errorList);
         }
 
         new Notification<Integer>(requestIDs.length).showNotificationDisplay(notificationMap);

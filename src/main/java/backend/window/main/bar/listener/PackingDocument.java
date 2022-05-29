@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public final class PackingFiles implements ActionListener {
+public final class PackingDocument implements ActionListener {
     private static final String PROCURATION_CODE_NAME = "dD";
     private static final String APPLICATION_CODE_NAME = "zZ";
     private static final String PHOTO_CODE_NAME = "fF";
@@ -136,12 +136,12 @@ public final class PackingFiles implements ActionListener {
             } catch (IOException e) {
                 if (archive.delete()) {
                     errorList.add("Ошибка при записи файлов.");
-                    notificationMap.put(archive.getName(), errorList);
                 } else {
                     errorList.add("Ошибка при запаковке файлов.");
-                    notificationMap.put(archive.getName(), errorList);
                 }
             }
+
+            notificationMap.put(archive.getName(), errorList);
         }
 
         new Notification<String>(applications.length).showNotificationDisplay(notificationMap);

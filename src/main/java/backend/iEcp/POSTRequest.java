@@ -15,6 +15,8 @@ public final class POSTRequest {
     public static final String CHANGE_REQUEST = "https://apinew.iecp.ru/api/external/v2/request/change";
     public static final String VIEW_REQUEST = "https://apinew.iecp.ru/api/external/v2/request/view";
     public static final String ATTACH_FILE = "https://apinew.iecp.ru/api/external/v2/request/attach_file";
+    public static final String CLIENT_DOCUMENT = "https://apinew.iecp.ru/api/external/v2/request/client_docs";
+    public static final String RESULT = "https://apinew.iecp.ru/api/external/v2/request/result";
 
     private static final int CONNECT_TIME_OUT = 10_000;
     private static final int READ_TIME_OUT = 60_000;

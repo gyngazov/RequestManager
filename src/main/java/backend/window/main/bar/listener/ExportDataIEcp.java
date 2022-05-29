@@ -71,7 +71,6 @@ public final class ExportDataIEcp extends DataConverter implements ActionListene
                     FormData dataValidation = FormData.generateOnRequestID(requestID);
                     if (!Objects.equals(dataValidation.getOrgINN(), data.getOrgINN())) {
                         errorList.add("Заявка принадлежит другому юридическому лицу.");
-                        badRequestIDMap.put(requestID, errorList);
                         continue;
                     }
                 }
@@ -79,18 +78,16 @@ public final class ExportDataIEcp extends DataConverter implements ActionListene
                 POSTRequest postRequest = new POSTRequest(POSTRequest.CHANGE_REQUEST, JSON);
                 if (postRequest.getResponseCode() != HttpsURLConnection.HTTP_OK) {
                     errorList.add(postRequest.getResponse());
-                    badRequestIDMap.put(requestID, errorList);
                 }
             } catch (SocketTimeoutException exception) {
                 errorList.add("Время ожидания операции истекло.");
-                badRequestIDMap.put(requestID, errorList);
             } catch (IOException exception) {
                 errorList.add("Ошибка получения данных.");
-                badRequestIDMap.put(requestID, errorList);
             } catch (Exception exception) {
                 errorList.add(exception.getMessage());
-                badRequestIDMap.put(requestID, errorList);
             }
+
+            badRequestIDMap.put(requestID, errorList);
         }
 
         new Notification<Integer>(requestIDs.length).showNotificationDisplay(badRequestIDMap);

@@ -17,7 +17,7 @@ import java.io.*;
 import java.net.SocketTimeoutException;
 import java.util.*;
 
-public record ExportAttachedFileIEcp() implements ActionListener {
+public record ExportAttachedDocumentIEcp() implements ActionListener {
 
     private @Nullable File[] getListFiles(@NotNull File currentDirectory, String regex) {
         return currentDirectory.listFiles(((dir, name) -> name.matches(regex)));
@@ -101,17 +101,15 @@ public record ExportAttachedFileIEcp() implements ActionListener {
                 sendPackageDocuments(currentDirectory, requestID, ".zip.sig");
             } catch (FileNotFoundException | BadRequestException e) {
                 errorList.add(e.getMessage());
-                notificationMap.put(requestID, errorList);
             } catch (SocketTimeoutException exception) {
                 errorList.add("Время ожидания операции истекло, попробуйте повторить запрос позже.");
-                notificationMap.put(requestID, errorList);
             } catch (IOException exception) {
                 errorList.add("Ошибка получения данных, попробуйте повторить запрос позже.");
-                notificationMap.put(requestID, errorList);
             } catch (Exception exception) {
                 errorList.add(exception.getMessage());
-                notificationMap.put(requestID, errorList);
             }
+
+            notificationMap.put(requestID, errorList);
         }
 
         new Notification<Integer>(requestIDs.length).showNotificationDisplay(notificationMap);

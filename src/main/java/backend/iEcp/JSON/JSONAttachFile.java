@@ -14,8 +14,6 @@ public final class JSONAttachFile extends JSONMain {
                           String file,
                           int fileType,
                           int requestID) {
-        super();
-
         this.fileName = fileName;
         this.file = file;
         this.fileType = fileType;

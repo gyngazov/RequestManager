@@ -29,11 +29,11 @@ final class MenuBar extends JMenuBar {
     private final JMenuItem deletingApplicantData = new JMenuItem("Очистить ПДн заявителя");
     private final JMenuItem deletingData = new JMenuItem("Очистить всё");
 
-    private final JMenuItem packingFiles = new JMenuItem("Запаковать документы...");
-    private final JMenuItem attachedFile = new JMenuItem("Документы...");
+    private final JMenuItem packingDocument = new JMenuItem("Запаковать документы...");
+    private final JMenuItem attachedDocument = new JMenuItem("Документы...");
     private final JMenuItem attachedRequest = new JMenuItem("Запрос...");
-
-    private final JMenuItem importingDocument = new JMenuItem("Скачать документы...");
+    private final JMenuItem importingDocument = new JMenuItem("Выгрузить документы...");
+    private final JMenuItem linkingDocument = new JMenuItem("Связать документы...");
 
     private final JMenuItem about = new JMenuItem("О программе...");
 
@@ -74,13 +74,15 @@ final class MenuBar extends JMenuBar {
         edit.add(insert);
         edit.add(delete);
 
-        attach.add(attachedFile);
+        attach.add(attachedDocument);
         attach.add(attachedRequest);
 
-        iEcp.add(packingFiles);
+        iEcp.add(packingDocument);
         iEcp.addSeparator();
         iEcp.add(attach);
         iEcp.add(importingDocument);
+        iEcp.addSeparator();
+        iEcp.add(linkingDocument);
 
         help.add(about);
 
@@ -104,11 +106,11 @@ final class MenuBar extends JMenuBar {
         deletingApplicantData.addActionListener(new DataReset(DataTypeEnum.APPLICANT_DATA));
         deletingData.addActionListener(new DataReset(DataTypeEnum.ALL_DATA));
 
-        packingFiles.addActionListener(new PackingFiles());
-        attachedFile.addActionListener(new ExportAttachedFileIEcp());
+        packingDocument.addActionListener(new PackingDocument());
+        attachedDocument.addActionListener(new ExportAttachedDocumentIEcp());
         attachedRequest.addActionListener(e -> new SendRequestDialogBox().buildFrame(MainWindow.getInstance()));
-
         importingDocument.addActionListener(e -> new DocumentSaveOptionsDialogBox().buildFrame(MainWindow.getInstance()));
+        linkingDocument.addActionListener(new LinkingDocument());
 
         about.addActionListener(e -> new About());
     }
