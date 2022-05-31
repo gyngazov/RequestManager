@@ -21,7 +21,7 @@ public final class About extends JDialog {
     private void setLayout() {
         Label titleLabel = new Label("<html><body><h2><b>REQUEST MANAGER</b></h2></body></html>", SwingConstants.CENTER);
         Label aboutLabel = new Label("Вячеслав Магергут");
-        Label versionLabel = new Label("Версия 2.0.0");
+        Label versionLabel = new Label("Версия 2.2.0");
         Label sourceCodeLabel = new Label("https://github.com/v-mgrgt/RequestManager.git");
 
         JPanel infoPanel = new JPanel();

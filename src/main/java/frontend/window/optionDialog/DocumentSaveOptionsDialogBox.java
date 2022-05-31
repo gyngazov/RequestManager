@@ -16,8 +16,8 @@ public class DocumentSaveOptionsDialogBox extends JDialog {
             new CheckBox("КСКПЭП (*.pdf)", true)    // [1]
     };
     private final RadioButton[] saveMethod = {
-            new RadioButton("Сохранить файлы в папку, содержащую соответствующий запрос", false),   // [0]
-            new RadioButton("Сохранить файлы в папку с номером заявки", true)                       // [1]
+            new RadioButton("Сохранить файлы в общую папку", true),             // [0]
+            new RadioButton("Сохранить файлы в папку с номером заявки", false)  // [1]
     };
     private final JButton submitButton = new JButton("Сохранить...");
 
@@ -25,7 +25,6 @@ public class DocumentSaveOptionsDialogBox extends JDialog {
         createGroupRadioButtons();
         setLayout();
         setListener();
-        setDefaults();
     }
 
     private void createGroupRadioButtons() {
@@ -94,26 +93,7 @@ public class DocumentSaveOptionsDialogBox extends JDialog {
             });
         }
 
-        saveMethod[0].addItemListener(e -> {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                if (e.getSource() instanceof RadioButton) {
-                    for (CheckBox type : documentType) {
-                        type.setEnabled(false);
-                        type.setSelected(true);
-                    }
-                }
-            } else {
-                for (CheckBox type : documentType) {
-                    type.setEnabled(true);
-                }
-            }
-        });
-
         submitButton.addActionListener(new ImportDocumentIEcp(documentType, saveMethod));
-    }
-
-    private void setDefaults() {
-        saveMethod[0].setSelected(true);
     }
 
     public void buildFrame(Component parentComponent) {

@@ -92,6 +92,7 @@ public final class ToolBar extends JToolBar {
         importDataPDF.addActionListener(new ImportDataPDF());
         importDataIEcp.addActionListener(new ImportDataIEcp(requestIDTextField, DataTypeEnum.ALL_DATA));
         exportDataIEcp.addActionListener(new ExportDataIEcp(requestIDTextField));
+        exportDataCFG.addActionListener(new ExportDataCFG());
         deleteData.addActionListener(new DataReset(DataTypeEnum.ALL_DATA));
     }
 

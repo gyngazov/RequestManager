@@ -66,8 +66,8 @@ public record ImportDocumentIEcp(CheckBox[] documentType, RadioButton[] saveMeth
                 for (Integer requestID : requestIDs) {
                     List<String> errorList = new ArrayList<>();
 
-                    JSONResult[] jsonResults = getResponse(requestID, errorList);
                     File savePath = new File(currentDirectory, saveMethod[0].isSelected() ? "" : requestID.toString());
+                    JSONResult[] jsonResults = getResponse(requestID, errorList);
                     if (jsonResults != null) {
                         if (documentType[0].isSelected()) {
                             saveDocument(jsonResults[0].getName(), jsonResults[0].getContentBase64(), savePath, errorList);
@@ -81,10 +81,6 @@ public record ImportDocumentIEcp(CheckBox[] documentType, RadioButton[] saveMeth
                 }
 
                 new Notification<Integer>(requestIDs.length).showNotificationDisplay(notificationMap);
-
-                if (saveMethod[0].isSelected()) {
-                    new LinkingDocument().link(currentDirectory);
-                }
             }
         } catch (Exception exception) {
             new MessageDialog.Error("<html><body>" + exception.getMessage() + "</body></html>");
